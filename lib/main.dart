@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
+import 'package:siri_wave/siri_wave.dart';
 
 void main() {
   runApp(const WebradioApp());
@@ -35,9 +36,20 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
   String? _coverUrl;
   String? _lastSong;
 
+  late IOS9SiriWaveformController _waveformController;
+
   @override
   void initState() {
     super.initState();
+
+    _waveformController = IOS9SiriWaveformController(
+      color1: Color(0xFFAD394C),
+      color2: Color(0xFF30DC9B),
+      color3: Color(0xFF0F52A9),
+      amplitude: 1.0,
+      speed: 0.15,
+    );
+
     _startRadio();
   }
 
@@ -90,18 +102,34 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
 
   // Atualiza a capa de álbum sempre que a música mudar
   Future<void> _updateCover(String currentSong) async {
-    if (_lastSong == currentSong) return; // evita chamadas desnecessárias
+    // if (_lastSong == currentSong) return; // evita chamadas desnecessárias
 
-    final newCover = await fetchCover();
-    setState(() {
-      _coverUrl = newCover;
-      _lastSong = currentSong;
-    });
+    if (_lastSong != currentSong) {
+
+      final newCover = await fetchCover();
+
+      setState(() {
+        _coverUrl = newCover;
+        _lastSong = currentSong;
+      });
+    }
   }
 
   String limparTitulo(String titulo) {
     // Remove qualquer [conteudo] no final do título
     return titulo.replaceAll(RegExp(r'\s*\[[^\]]*\]$'), '').trim();
+  }
+
+  Widget _formWave(bool playing) {
+    _waveformController.amplitude = playing ? 1.0 : 0.0;
+    _waveformController.speed = playing ? 0.15 : 0.0;
+    return SiriWaveform.ios9(
+      controller: _waveformController,
+      options: IOS9SiriWaveformOptions(
+        height: 100,
+        width: 250,
+      ),
+    );
   }
 
   @override
@@ -117,13 +145,25 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
       appBar: AppBar(
         title: Text(
             'Radio Web',
+          style: TextStyle(
+            fontSize: 30,
+          ),
         ),
         centerTitle: true,
+        backgroundColor: Color(0xFF03ebff),
       ),
       body: Center(
-        child: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background.jpg'),
+              fit: BoxFit.cover
+            ),
+          ),
+          padding: EdgeInsets.only(top: 150),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               StreamBuilder<IcyMetadata?>(
                 stream: player.icyMetadataStream,
@@ -140,58 +180,64 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                       : 'Desconhecido';
 
                   if (rawTitle.isNotEmpty) {
+                    // chama função que retorna a url com
                     _updateCover(rawTitle);
                   }
 
                   return Column(
-                    children: <Widget>[
+                    children: [
+                      SizedBox(height: 10,),
                       if (_coverUrl != null
                           && _coverUrl!.isNotEmpty
                           && artist.isNotEmpty)... [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 16),
-                          child: Image.network(
-                              _coverUrl!,
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Image.asset(
-                                    'assets/logo.png',
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
+                        Image.network(
+                          _coverUrl!,
+                          height: 120,
+                          width: 120,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Image.asset(
+                                'assets/logo.png',
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
                         ),
                       ] else... [
                         Image.asset(
                           'assets/logo.png',
-                          height: 150,
-                          width: 150,
+                          height: 120,
+                          width: 120,
                           fit: BoxFit.cover,
                         ),
-
                       ],
+
+                      // Exibe o wave form quando a música está tocando
+                      StreamBuilder(
+                          stream: player.playingStream,
+                          initialData: player.playing,
+                          builder: (context, snapshot) {
+                            // final playing = snapshot.data ?? false;
+                            return _formWave(true);
+                          }),
                       Text(
                         artist.isNotEmpty
                             ? artist
                             :"Carregando artista...",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           color: Colors.white,
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                      SizedBox(height: 8,),
                       Text(
                         song.isNotEmpty
                             ? song
                             :"Carregando música...",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
                             color: Colors.white,
                             fontStyle: FontStyle.italic,
                             // fontWeight: FontWeight.bold
@@ -202,17 +248,28 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                 }
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               StreamBuilder(
                   stream: player.playingStream,
                   initialData: player.playing,
                   builder: (context, snapshot) {
                     final playing = snapshot.data ?? false;
-                    return ElevatedButton.icon(
+                    // return ElevatedButton.icon(
+                    //     onPressed: _togglePlayPause,
+                    //     icon: Icon(playing ? Icons.pause : Icons.play_arrow),
+                    //     label: Text(playing ? 'Pausar' : 'Reproduzir'),
+                    // );
+                    return IconButton(
                         onPressed: _togglePlayPause,
-                        icon: Icon(playing ? Icons.pause : Icons.play_arrow),
-                        label: Text(playing ? 'Pausar' : 'Reproduzir'),
+                        icon: Icon(
+                          playing
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                          size: 50,
+                          color: Color((0xFF03ebff),
+                          ),
+                        ),
                     );
                   }
               ),
