@@ -5,7 +5,7 @@ import 'package:waveform_visualizer/waveform_visualizer.dart';
 
 
 import 'package:webradio_parque_verde/components/button_play_stop.dart';
-import 'package:webradio_parque_verde/components/cover_2.dart';
+import 'package:webradio_parque_verde/components/cover_image2.dart';
 import 'package:webradio_parque_verde/components/cover_image.dart';
 import 'package:webradio_parque_verde/components/text_info.dart';
 import 'package:webradio_parque_verde/components/wave_controller.dart';
