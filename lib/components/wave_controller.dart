@@ -20,25 +20,21 @@ class WaveForm extends StatelessWidget {
         height: 170,
         width: 230,
         style: WaveformStyle(
-            waveformStyle: WaveformDrawStyle.bars,
-            waveColor: Color(0xFF03ebff),
-            backgroundColor: Color(0x00ff5722),
-            barCount: 18,
-            barSpacing: 2.0,
-            strokeWidth: 2.0,
-            showGradient: true,
-            gradientBegin: Alignment.topCenter,
-            gradientEnd: Alignment.bottomCenter,
-            animationDuration: playing
-                ? Duration(seconds: 1)
-                : Duration.zero
+          waveformStyle: WaveformDrawStyle.bars,
+          waveColor: Color(0xFF03ebff),
+          backgroundColor: Color(0x00ff5722),
+          barCount: 18,
+          barSpacing: 2.0,
+          strokeWidth: 2.0,
+          showGradient: true,
+          gradientBegin: Alignment.topCenter,
+          gradientEnd: Alignment.bottomCenter,
+          animationDuration: playing ? Duration(seconds: 1) : Duration.zero,
         ),
       );
     } else {
       _waveController.stop();
-      return SizedBox(
-        height: 170,
-      );
+      return SizedBox(height: 170);
     }
   }
 }

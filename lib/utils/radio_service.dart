@@ -3,23 +3,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'package:webradio_parque_verde/constants.dart';
+
+// Imports locais
+import '../constants.dart';
 
 class RadioService {
   final AudioPlayer player;
   final String streamUrl;
 
-
-  RadioService({
-    required this.player,
-    required this.streamUrl,
-  });
+  RadioService({required this.player, required this.streamUrl});
 
   Future<void> startRadio() async {
     try {
-      await player.setAudioSource(
-        AudioSource.uri(Uri.parse(streamUrl)),
-      );
+      await player.setAudioSource(AudioSource.uri(Uri.parse(streamUrl)));
       await player.play();
     } catch (e) {
       debugPrint("Erro ao iniciar rádio: $e");
@@ -32,9 +28,7 @@ class RadioService {
     } else {
       try {
         // Reinicia stream para garantir áudio ao vivo
-        await player.setAudioSource(
-          AudioSource.uri(Uri.parse(streamUrl)),
-        );
+        await player.setAudioSource(AudioSource.uri(Uri.parse(streamUrl)));
         await player.play();
       } catch (e) {
         debugPrint("Erro ao iniciar rádio: $e");
@@ -52,9 +46,7 @@ class RadioService {
 
   Future<String?> fetchCover() async {
     try {
-      final response = await http.get(
-        Uri.parse(kUrlCover),
-      );
+      final response = await http.get(Uri.parse(kUrlCover));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

@@ -27,10 +27,7 @@ class PlayPauseButton extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: borderColor,
-              width: 3,
-            ),
+            border: Border.all(color: borderColor, width: 3),
           ),
           child: FloatingActionButton(
             onPressed: onPressed,
