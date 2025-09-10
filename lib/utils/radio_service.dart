@@ -51,6 +51,8 @@ class RadioService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return data["data"]?[0]?["track"]?["imageurl"];
+      } else {
+        return kLinkLogo;
       }
     } catch (e) {
       debugPrint("Erro ao buscar capa: $e");

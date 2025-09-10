@@ -23,27 +23,27 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
   final AudioPlayer player = AudioPlayer();
   final String streamUrl = kUrlServer;
   late WaveformController _waveController;
-  // late RadioService radioService = RadioService(
-  //   player: player,
-  //   streamUrl: streamUrl,
-  // );
-  late RadioService radioService;
+  late final RadioService radioService = RadioService(
+    player: player,
+    streamUrl: streamUrl,
+  );
 
   String? _coverUrl;
+  // String _coverUrl = kLinkLogo;
   String? _lastSong;
 
   @override
   void initState() {
     super.initState();
-    radioService = RadioService(player: player, streamUrl: streamUrl);
+    // radioService;
     _waveController = WaveformController();
     // Chama startRadio da classe auxiliar radio_service
     radioService.startRadio();
   }
 
   // Atualiza a capa de álbum sempre que a música mudar
-  Future<void> _updateCover(String currentSong) async {
-    if (_lastSong != currentSong) {
+  Future<void> _updateCover(String currentSong, bool playing) async {
+    if (_lastSong != currentSong || playing) {
       final newCover = await radioService.fetchCover();
 
       setState(() {
@@ -63,7 +63,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF001a2c),
+      // backgroundColor: Color(0xFF001a2c),
       appBar: AppBar(
         title: Text('Radio Web', style: TextStyle(fontSize: 30)),
         centerTitle: true,
@@ -87,6 +87,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                 builder: (context, snapshot) {
                   final icy = snapshot.data;
 
+                  final playing = player.playing;
                   final rawTitle = icy?.info?.title ?? '';
                   final parts = rawTitle.split(' - ');
                   final artist = parts.isNotEmpty
@@ -98,11 +99,10 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                       ? radioService.limparTitulo(nameSong)
                       : 'Desconhecido';
 
-                  if (rawTitle.isNotEmpty) {
+                  if (rawTitle.isNotEmpty || playing) {
                     // chama função que retorna a url com
-                    _updateCover(rawTitle);
+                    _updateCover(rawTitle, playing);
                   }
-
                   return Padding(
                     padding: const EdgeInsets.only(right: 20, left: 20),
                     child: Column(
@@ -123,8 +123,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                               },
                             ),
 
-                            if (_coverUrl != null &&
-                                _coverUrl!.isNotEmpty &&
+                            if (_coverUrl != null && _coverUrl!.isNotEmpty &&
                                 artist.isNotEmpty) ...[
                               // Chama o widget que exite a imagem dos álbuns
                               Cover(coverUrl: _coverUrl),
@@ -143,7 +142,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
               ),
 
               SizedBox(height: 10),
-
               PlayPauseButton(
                 playingStream: player.playingStream,
                 backgroundColor: kColor3,
