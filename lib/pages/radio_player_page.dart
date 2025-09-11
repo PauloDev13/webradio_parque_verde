@@ -37,14 +37,17 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
     radioService.startRadio();
   }
 
-  // Atualiza a capa de álbum sempre que a música mudar
-  Future<void> _updateCover(String currentSong, bool playing) async {
-    if (_lastSong != currentSong || playing) {
-      final newCover = await radioService.fetchCover();
+  Future<void> _updateCover({
+    required String artist,
+    required String song,
+    required bool playing,
+  }) async {
+    if (_lastSong != song && playing) {
+      final newCover = await radioService.fetchCoverItunes(artist, song);
 
       setState(() {
-        _coverUrl = newCover ?? kLinkLogo2;
-        _lastSong = currentSong;
+        _coverUrl = newCover;
+        _lastSong = song;
       });
     }
   }
@@ -65,80 +68,77 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
         centerTitle: true,
         backgroundColor: kColor2,
       ),
-      body: StreamBuilder<RadioStatus>(
-        stream: radioService.statusStream,
-        builder: (context, snapshot) {
-          final status = snapshot.data ?? RadioStatus.idle;
+      body: Center(
+        child: Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          padding: EdgeInsets.only(top: 150),
+          child: StreamBuilder<RadioStatus>(
+            stream: radioService.statusStream,
+            builder: (context, snapshot) {
+              final status = snapshot.data ?? RadioStatus.idle;
 
-          if (status == RadioStatus.ready) {
-            return Center(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/background.jpg'),
-                    fit: BoxFit.cover,
+              if (status == RadioStatus.ready) {
+                return StreamBuilder<IcyMetadata?>(
+                  stream: player.icyMetadataStream,
+                  builder: (context, snapshot) {
+                    final icy = snapshot.data;
+
+                    final playing = player.playing;
+                    final rawTitle = icy?.info?.title ?? '';
+                    final parts = rawTitle.split(' - ');
+                    final artist = parts.isNotEmpty
+                        ? parts.first.trim()
+                        : 'Desconhecido';
+                    final nameSong = parts.sublist(1).join(' - ').trim();
+                    // Chama função limpaTitulo da classe auxiliar radio_service
+                    final song = parts.length > 1
+                        ? radioService.limparTitulo(nameSong)
+                        : 'Desconhecido';
+
+                    if (rawTitle.isNotEmpty || playing) {
+                      // chama função que retorna a url com
+                      _updateCover(
+                        artist: artist,
+                        song: song,
+                        playing: playing,
+                      );
+                    }
+                    // Retorna o Widget customizado
+                    return ViewData(
+                      player: player,
+                      waveController: _waveController,
+                      radioService: radioService,
+                      coverUrl: _coverUrl,
+                      artist: artist,
+                      song: song,
+                    );
+                  }, //Builder
+                );
+              } else if (status == RadioStatus.loading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: kColor2),
+                );
+              } else if (status == RadioStatus.error) {
+                return const Center(
+                  child: Text(
+                    'Erro conectar à rádio',
+                    style: TextStyle(fontSize: 20, color: kColor2),
                   ),
-                ),
-                padding: EdgeInsets.only(top: 150),
-                child: Column(
-                  children: <Widget>[
-                    StreamBuilder<IcyMetadata?>(
-                      stream: player.icyMetadataStream,
-                      builder: (context, snapshot) {
-                        final icy = snapshot.data;
-
-                        final playing = player.playing;
-                        final rawTitle = icy?.info?.title ?? '';
-                        final parts = rawTitle.split(' - ');
-                        final artist = parts.isNotEmpty
-                            ? parts.first.trim()
-                            : 'Desconhecido';
-                        final nameSong = parts.sublist(1).join(' - ').trim();
-                        // Chama função limpaTitulo da classe auxiliar radio_service
-                        final song = parts.length > 1
-                            ? radioService.limparTitulo(nameSong)
-                            : 'Desconhecido';
-
-                        if (rawTitle.isNotEmpty || playing) {
-                          // chama função que retorna a url com
-                          _updateCover(rawTitle, playing);
-                        }
-                        // Retorna o Widget customizado
-                        return ViewData(
-                          player: player,
-                          waveController: _waveController,
-                          radioService: radioService,
-                          coverUrl: _coverUrl,
-                          artist: artist,
-                          song: song,
-                        );
-                      }, //Builder
-                    ),
-                  ],
-                ),
-              ),
-            );
-          } else if (status == RadioStatus.loading) {
-            return const Center(
-              child: CircularProgressIndicator(color: kColor2),
-            );
-          } else if (status == RadioStatus.error) {
-            return const Center(
-              child: Text(
-                'Erro conectar à rádio',
-                style: TextStyle(fontSize: 20, color: kColor2),
-              ),
-            );
-          } else {
-            return const Center(
-              child: Text(
-                'Erro conectar à rádio',
-                style: TextStyle(fontSize: 20, color: kColor2),
-              ),
-            );
-          } // fim if
-        }, // Builder
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(color: kColor2),
+                );
+              } // fim if
+            }, // Builder
+          ),
+        ),
       ),
     );
   }

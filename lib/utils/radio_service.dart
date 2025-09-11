@@ -80,4 +80,37 @@ class RadioService {
     // Remove qualquer [conteúdo] no final do título
     return titulo.replaceAll(RegExp(r'\s*\[[^\]]*\]$'), '').trim();
   }
+
+  Future<String> fetchCoverItunes(String artist, String music) async {
+    try {
+      final query = Uri.encodeComponent('$artist $music');
+      const country = "US";
+      final url = Uri.parse('https://itunes.apple.com/search'
+          '?term=$query'
+          '&entity=musicTrack'
+          '&limit=1'
+          '&country=$country'
+      );
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonBody = json.decode(response.body);
+        final List<dynamic>? results = jsonBody['results'];
+
+        if (results != null && results.isNotEmpty) {
+          final first = results.first as Map<String, dynamic>;
+          final artworkUrl = first['artworkUrl100'] as String?;
+
+          if (artworkUrl != null) {
+            return artworkUrl;
+          }
+        }
+      } else {
+        debugPrint('iTunes API retornou status ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Erro ao buscar capa: $e');
+    }
+    return 'https://via.placeholder.com/100.png?text=Sem+Capa';
+  }
 }
