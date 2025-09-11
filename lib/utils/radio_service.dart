@@ -7,11 +7,27 @@ import 'package:just_audio/just_audio.dart';
 // Imports locais
 import '../constants.dart';
 
+enum RadioStatus{idle, loading, ready, error}
+
 class RadioService {
   final AudioPlayer player;
   final String streamUrl;
+  late final Stream<RadioStatus> statusStream;
 
-  RadioService({required this.player, required this.streamUrl});
+  RadioService({required this.player, required this.streamUrl}){
+    statusStream = player.processingStateStream.map((state) {
+      switch (state) {
+        case ProcessingState.loading:
+        case ProcessingState.buffering:
+          return RadioStatus.loading;
+        case ProcessingState.ready:
+          return RadioStatus.ready;
+        case ProcessingState.completed:
+        case ProcessingState.idle:
+          return RadioStatus.idle;
+      }
+    }).handleError((_) => RadioStatus.error);
+  }
 
   Future<void> startRadio() async {
     try {

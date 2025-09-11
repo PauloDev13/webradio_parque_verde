@@ -10,7 +10,6 @@ import '../utils/radio_service.dart';
 import '../constants.dart';
 import 'cover_image.dart';
 
-
 class ViewData extends StatelessWidget {
   const ViewData({
     super.key,
@@ -32,58 +31,45 @@ class ViewData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool playing = player.playing;
+    return Padding(
+      padding: const EdgeInsets.only(right: 20, left: 20),
+      child: Column(
+        children: <Widget>[
+          Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              StreamBuilder(
+                stream: player.playingStream,
+                initialData: player.playing,
+                builder: (context, snapshot) {
+                  final playing = snapshot.data ?? false;
 
-    if (playing && artist.isNotEmpty && _coverUrl != null) {
-      return Padding(
-        padding: const EdgeInsets.only(right: 20, left: 20),
-        child: Column(
-          children: <Widget>[
-            Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                StreamBuilder(
-                  stream: player.playingStream,
-                  initialData: player.playing,
-                  builder: (context, snapshot) {
-                    final playing = snapshot.data ?? false;
+                  // Chama no retorno o widget WaveForm customizado
+                  return WaveForm(
+                    waveController: _waveController,
+                    playing: playing,
+                  );
+                },
+              ),
 
-                    // Chama no retorno o widget WaveForm customizado
-                    return WaveForm(
-                      waveController: _waveController,
-                      playing: playing,
-                    );
-                  },
-                ),
+              Cover(coverUrl: _coverUrl),
+            ],
+          ),
 
-                Cover(coverUrl: _coverUrl),
+          TextInfo(metadata: artist, textStyle: kArtistTextStyle),
+          TextInfo(metadata: song, textStyle: kASongTextStyle),
 
-              ],
-            ),
+          SizedBox(height: 10),
 
-            TextInfo(metadata: artist, textStyle: kArtistTextStyle),
-            TextInfo(metadata: song, textStyle: kASongTextStyle),
-
-            SizedBox(height: 10),
-
-            PlayPauseButton(
-              playingStream: player.playingStream,
-              backgroundColor: kColor3,
-              borderColor: kColorBorderButton,
-              initialPlaying: player.playing,
-              onPressed: radioService.togglePlayPause,
-            ),
-          ],
-        ),
-      );
-    } else {
-      return SizedBox(
-        height: 50,
-        child: Text(
-          'Conectando...',
-          style: TextStyle(fontSize: 25, color: Colors.white),
-        ),
-      );
-    }
+          PlayPauseButton(
+            playingStream: player.playingStream,
+            backgroundColor: kColor3,
+            borderColor: kColorBorderButton,
+            initialPlaying: player.playing,
+            onPressed: radioService.togglePlayPause,
+          ),
+        ],
+      ),
+    );
   }
 }

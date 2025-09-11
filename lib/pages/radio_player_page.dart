@@ -31,7 +31,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
   @override
   void initState() {
     super.initState();
-    _coverUrl = kLinkLogo;
+    _coverUrl = kLinkLogo2;
     _waveController = WaveformController();
     // Chama startRadio da classe auxiliar radio_service
     radioService.startRadio();
@@ -43,7 +43,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
       final newCover = await radioService.fetchCover();
 
       setState(() {
-        _coverUrl = newCover;
+        _coverUrl = newCover ?? kLinkLogo2;
         _lastSong = currentSong;
       });
     }
@@ -65,53 +65,80 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
         centerTitle: true,
         backgroundColor: kColor2,
       ),
-      body: Center(
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/background.jpg'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          padding: EdgeInsets.only(top: 150),
-          child: Column(
-            children: <Widget>[
-              StreamBuilder<IcyMetadata?>(
-                stream: player.icyMetadataStream,
-                builder: (context, snapshot) {
-                  final icy = snapshot.data;
+      body: StreamBuilder<RadioStatus>(
+        stream: radioService.statusStream,
+        builder: (context, snapshot) {
+          final status = snapshot.data ?? RadioStatus.idle;
 
-                  final playing = player.playing;
-                  final rawTitle = icy?.info?.title ?? '';
-                  final parts = rawTitle.split(' - ');
-                  final artist = parts.isNotEmpty
-                      ? parts.first.trim()
-                      : 'Desconhecido';
-                  final nameSong = parts.sublist(1).join(' - ').trim();
-                  // Chama função limpaTitulo da classe auxiliar radio_service
-                  final song = parts.length > 1
-                      ? radioService.limparTitulo(nameSong)
-                      : 'Desconhecido';
+          if (status == RadioStatus.ready) {
+            return Center(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/background.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                padding: EdgeInsets.only(top: 150),
+                child: Column(
+                  children: <Widget>[
+                    StreamBuilder<IcyMetadata?>(
+                      stream: player.icyMetadataStream,
+                      builder: (context, snapshot) {
+                        final icy = snapshot.data;
 
-                  if (rawTitle.isNotEmpty || playing) {
-                    // chama função que retorna a url com
-                    _updateCover(rawTitle, playing);
-                  }
-                  // Retorna o Widget customizado
-                  return ViewData(
-                    player: player,
-                    waveController: _waveController,
-                    radioService: radioService,
-                    coverUrl: _coverUrl,
-                    artist: artist,
-                    song: song,
-                  );
-                }, //Builder
+                        final playing = player.playing;
+                        final rawTitle = icy?.info?.title ?? '';
+                        final parts = rawTitle.split(' - ');
+                        final artist = parts.isNotEmpty
+                            ? parts.first.trim()
+                            : 'Desconhecido';
+                        final nameSong = parts.sublist(1).join(' - ').trim();
+                        // Chama função limpaTitulo da classe auxiliar radio_service
+                        final song = parts.length > 1
+                            ? radioService.limparTitulo(nameSong)
+                            : 'Desconhecido';
+
+                        if (rawTitle.isNotEmpty || playing) {
+                          // chama função que retorna a url com
+                          _updateCover(rawTitle, playing);
+                        }
+                        // Retorna o Widget customizado
+                        return ViewData(
+                          player: player,
+                          waveController: _waveController,
+                          radioService: radioService,
+                          coverUrl: _coverUrl,
+                          artist: artist,
+                          song: song,
+                        );
+                      }, //Builder
+                    ),
+                  ],
+                ),
               ),
-            ]
-          ),
-        ),
+            );
+          } else if (status == RadioStatus.loading) {
+            return const Center(
+              child: CircularProgressIndicator(color: kColor2),
+            );
+          } else if (status == RadioStatus.error) {
+            return const Center(
+              child: Text(
+                'Erro conectar à rádio',
+                style: TextStyle(fontSize: 20, color: kColor2),
+              ),
+            );
+          } else {
+            return const Center(
+              child: Text(
+                'Erro conectar à rádio',
+                style: TextStyle(fontSize: 20, color: kColor2),
+              ),
+            );
+          } // fim if
+        }, // Builder
       ),
     );
   }
