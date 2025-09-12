@@ -123,6 +123,6 @@ class RadioService {
     } catch (e) {
       debugPrint('Erro ao buscar capa: $e');
     }
-    return 'https://via.placeholder.com/100.png?text=Sem+Capa';
+    return kUrlFallback;
   }
 }
