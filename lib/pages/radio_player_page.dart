@@ -1,7 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
+import 'package:webradio_parque_verde/components/background_container.dart';
+import 'package:webradio_parque_verde/components/load_spinner.dart';
 
 // Imports locais
 import '../components/view_data.dart';
@@ -31,18 +34,19 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
   @override
   void initState() {
     super.initState();
-    _coverUrl = kLinkLogo2;
+    // _coverUrl = kLinkLogo;
     _waveController = WaveformController();
-    // Chama startRadio da classe auxiliar radio_service
+    // Chama startRadio para iniciar o player
     radioService.startRadio();
   }
 
+  // Atualiza a capa do álbum quando a música muda
   Future<void> _updateCover({
     required String artist,
     required String song,
     required bool playing,
   }) async {
-    if (_lastSong != song && playing) {
+    if (_lastSong != song) {
       final newCover = await radioService.fetchCoverItunes(artist, song);
 
       setState(() {
@@ -77,7 +81,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
               fit: BoxFit.cover,
             ),
           ),
-          padding: EdgeInsets.only(top: 150),
           child: StreamBuilder<RadioStatus>(
             stream: radioService.statusStream,
             builder: (context, snapshot) {
@@ -94,12 +97,12 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                     final parts = rawTitle.split(' - ');
                     final artist = parts.isNotEmpty
                         ? parts.first.trim()
-                        : 'Desconhecido';
+                        : 'Sem informação';
                     final nameSong = parts.sublist(1).join(' - ').trim();
                     // Chama função limpaTitulo da classe auxiliar radio_service
                     final song = parts.length > 1
                         ? radioService.limparTitulo(nameSong)
-                        : 'Desconhecido';
+                        : 'Sem informação...';
 
                     if (rawTitle.isNotEmpty || playing) {
                       // chama função que retorna a url com
@@ -109,32 +112,33 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                         playing: playing,
                       );
                     }
-                    // Retorna o Widget customizado
-                    return ViewData(
-                      player: player,
-                      waveController: _waveController,
-                      radioService: radioService,
-                      coverUrl: _coverUrl,
-                      artist: artist,
-                      song: song,
+                    // Retorna o Widget customizado que exibe a capa, o nome
+                    // do artista, o nome da música e o botão player/stop
+                    return BackgroundContainer(
+                      padding: EdgeInsets.only(top: 150),
+                      child: ViewData(
+                        player: player,
+                        waveController: _waveController,
+                        radioService: radioService,
+                        coverUrl: _coverUrl,
+                        artist: artist,
+                        song: song,
+                      ),
                     );
                   }, //Builder
                 );
               } else if (status == RadioStatus.loading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: kColor2),
-                );
+                return LoadSpinner(padding: EdgeInsets.only(top: 210));
               } else if (status == RadioStatus.error) {
-                return const Center(
+                return BackgroundContainer(
+                  padding: EdgeInsets.only(top: 210),
                   child: Text(
                     'Erro conectar à rádio',
-                    style: TextStyle(fontSize: 20, color: kColor2),
+                    style: kErroConexaoStyle,
                   ),
                 );
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(color: kColor2),
-                );
+                return LoadSpinner(padding: EdgeInsets.only(top: 210));
               } // fim if
             }, // Builder
           ),

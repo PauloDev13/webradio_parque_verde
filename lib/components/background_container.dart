@@ -2,21 +2,15 @@ import 'package:flutter/material.dart';
 
 class BackgroundContainer extends StatelessWidget {
   final Widget child;
+  final EdgeInsetsGeometry? padding;
 
-  const BackgroundContainer({super.key, required this.child});
+  const BackgroundContainer({super.key, required this.child, this.padding});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/background.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      padding: const EdgeInsets.only(top: 150),
-      child: child,
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Container(padding: padding, child: child),
     );
   }
 }

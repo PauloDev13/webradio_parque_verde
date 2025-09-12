@@ -11,10 +11,7 @@ const kColorBorderButton = Color(0x8003ebff);
 
 const kUrlServer = 'https://usa13.fastcast4u.com/proxy/parqueverde?mp=/1';
 const kUrlCover = 'https://usa13.fastcast4u.com/rpc/parqueverde/streaminfo.get';
-const kLinkLogo =
-    'https://drive.google.com/file/d/1t_Q8u_ouwmjctpgSGzDMFnYhe8x8DKEb/view';
-const kLinkLogo2 =
-    'https://drive.google.com/uc?export=view&id=1t_Q8u_ouwmjctpgSGzDMFnYhe8x8DKEb';
+const kUrlFallback = 'https://via.placeholder.com/100.png?text=Sem+Capa';
 
 const kArtistTextStyle = TextStyle(
   fontSize: 20,
@@ -26,4 +23,10 @@ const kASongTextStyle = TextStyle(
   fontSize: 18,
   color: Colors.white,
   fontStyle: FontStyle.italic,
+);
+
+const kErroConexaoStyle = TextStyle(
+  fontSize: 20,
+  color: kColor2,
+  fontWeight: FontWeight.bold,
 );

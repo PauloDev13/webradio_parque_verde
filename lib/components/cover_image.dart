@@ -19,7 +19,7 @@ class Cover extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Image.network(
-          _coverUrl!,
+          _coverUrl ?? kUrlFallback,
           height: 140,
           width: 140,
           fit: BoxFit.cover,

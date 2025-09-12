@@ -9,7 +9,7 @@ class TextInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      metadata.isNotEmpty ? metadata : "Carregando informação...",
+      metadata.isNotEmpty ? metadata : 'Sem informação...',
       textAlign: TextAlign.center,
       style: textStyle,
     );

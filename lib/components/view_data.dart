@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
 
+import '../constants.dart';
+import '../utils/radio_service.dart';
 import 'button_play_stop.dart';
+import 'cover_image.dart';
 import 'text_info.dart';
 import 'wave_controller.dart';
-import '../utils/radio_service.dart';
-
-import '../constants.dart';
-import 'cover_image.dart';
 
 class ViewData extends StatelessWidget {
   const ViewData({
@@ -44,23 +43,30 @@ class ViewData extends StatelessWidget {
                 builder: (context, snapshot) {
                   final playing = snapshot.data ?? false;
 
-                  // Chama no retorno o widget WaveForm customizado
+                  // Carrega o widget customizado WaveForm que exibe ondas
+                  // de aúdio
                   return WaveForm(
                     waveController: _waveController,
                     playing: playing,
                   );
-                },
+                }, // builder
               ),
 
+              // Carrega o widget customizado Cover que exibe a capa do
+              // álbum do artista que está em execução
               Cover(coverUrl: _coverUrl),
             ],
           ),
 
+          // Carrega os widgets customizado TextInfo que exibe os nome do
+          // artista e música
           TextInfo(metadata: artist, textStyle: kArtistTextStyle),
           TextInfo(metadata: song, textStyle: kASongTextStyle),
 
           SizedBox(height: 10),
 
+          // Carrega o widget customizado PlayPauseButton que controla o
+          // play/stop do player
           PlayPauseButton(
             playingStream: player.playingStream,
             backgroundColor: kColor3,
