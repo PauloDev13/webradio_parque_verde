@@ -5,6 +5,7 @@ class PlayPauseButton extends StatelessWidget {
   final bool initialPlaying;
   final VoidCallback onPressed;
   final Color borderColor;
+  final Color iconColor;
   final Color backgroundColor;
 
   const PlayPauseButton({
@@ -13,6 +14,7 @@ class PlayPauseButton extends StatelessWidget {
     required this.initialPlaying,
     required this.onPressed,
     required this.borderColor,
+    required this.iconColor,
     required this.backgroundColor,
   });
 
@@ -25,19 +27,19 @@ class PlayPauseButton extends StatelessWidget {
         final playing = snapshot.data ?? false;
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: borderColor, width: 3),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: borderColor, width: 2),
           ),
-          child: FloatingActionButton(
+          child: FloatingActionButton.small(
             onPressed: onPressed,
             backgroundColor: backgroundColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
               playing ? Icons.stop : Icons.play_arrow,
-              size: 40,
-              color: borderColor,
+              size: 30,
+              color: iconColor,
             ),
           ),
         );

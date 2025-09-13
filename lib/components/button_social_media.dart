@@ -26,12 +26,12 @@ class ButtonSocialMedia extends StatelessWidget {
     return OutlinedButton.icon(
       onPressed: onPressed,
       icon: FaIcon(icon, color: iconColor, size: iconSize),
-      label: Text(label, style: TextStyle(color: labelColor, fontSize: 16)),
+      label: Text(label, style: TextStyle(color: labelColor, fontSize: 12)),
       style: OutlinedButton.styleFrom(
         backgroundColor: kColor3,
-        side: BorderSide(color: borderColor, width: 3),
+        side: BorderSide(color: borderColor, width: 2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
     );
   }

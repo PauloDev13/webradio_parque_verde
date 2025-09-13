@@ -68,7 +68,7 @@ class ViewData extends StatelessWidget {
           TextInfo(metadata: artist, textStyle: kArtistTextStyle),
           TextInfo(metadata: song, textStyle: kASongTextStyle),
 
-          SizedBox(height: 20),
+          SizedBox(height: 10),
 
           // Carrega o widget customizado PlayPauseButton que controla o
           // play/stop do player
@@ -76,6 +76,7 @@ class ViewData extends StatelessWidget {
             playingStream: player.playingStream,
             backgroundColor: kColor3,
             borderColor: kColorBorderButton,
+            iconColor: kColor2,
             initialPlaying: player.playing,
             onPressed: radioService.togglePlayPause,
           ),
@@ -85,7 +86,7 @@ class ViewData extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 50),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                children: <Widget>[
                   ButtonSocialMedia(
                     onPressed: () {
                       SocialMediaService.openWhatsapp(phone: '5584987015547');

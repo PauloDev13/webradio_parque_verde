@@ -10,14 +10,16 @@ class WaveFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     AudioVisualizer audio = AudioVisualizer(
       audioSource: AudioPlayerSource(),
-      visualizationType: VisualizationType.spectrum,
+      visualizationType: VisualizationType.waveform,
       height: 70,
       style: AudioVisualizerStyle(
-        waveformColor: Colors.blue,
+        waveformColor: kColor2,
         backgroundColor: Colors.transparent,
         barWidth: 2.6,
         barSpacing: 1.0,
-        animationDuration: Duration(milliseconds: 50),
+        animationDuration: playing
+            ? Duration(milliseconds: 150)
+            : Duration.zero,
         gradient: LinearGradient(
           colors: [kColor3, kColor2],
           begin: Alignment.bottomCenter,
@@ -25,7 +27,6 @@ class WaveFormWidget extends StatelessWidget {
         ),
       ),
     );
-
     if (playing) {
       audio.audioSource?.start();
       return Center(child: audio);

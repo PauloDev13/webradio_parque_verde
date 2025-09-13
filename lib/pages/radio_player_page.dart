@@ -66,7 +66,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
     return Scaffold(
       backgroundColor: Color(0xFF001a2c),
       appBar: AppBar(
-        title: Text('Radio Web', style: TextStyle(fontSize: 30)),
+        title: Text('Web Rádio', style: TextStyle(fontSize: 30)),
         centerTitle: true,
         backgroundColor: kColor2,
       ),
