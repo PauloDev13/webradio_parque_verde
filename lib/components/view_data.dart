@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
 
+import '../components/button_social_media.dart';
+import '../components/wave_form_widget.dart';
+// import '../components/wave_controller.dart';
 import '../constants.dart';
+import '../utils//social_media_service.dart';
 import '../utils/radio_service.dart';
 import 'button_play_stop.dart';
 import 'cover_image.dart';
 import 'text_info.dart';
-import 'wave_controller.dart';
 
 class ViewData extends StatelessWidget {
   const ViewData({
@@ -42,13 +46,13 @@ class ViewData extends StatelessWidget {
                 initialData: player.playing,
                 builder: (context, snapshot) {
                   final playing = snapshot.data ?? false;
-
                   // Carrega o widget customizado WaveForm que exibe ondas
                   // de aúdio
-                  return WaveForm(
-                    waveController: _waveController,
-                    playing: playing,
-                  );
+                  return WaveFormWidget(playing: playing);
+                  // return WaveForm(
+                  //   waveController: _waveController,
+                  //   playing: playing,
+                  // );
                 }, // builder
               ),
 
@@ -58,12 +62,13 @@ class ViewData extends StatelessWidget {
             ],
           ),
 
+          SizedBox(height: 10),
           // Carrega os widgets customizado TextInfo que exibe os nome do
           // artista e música
           TextInfo(metadata: artist, textStyle: kArtistTextStyle),
           TextInfo(metadata: song, textStyle: kASongTextStyle),
 
-          SizedBox(height: 10),
+          SizedBox(height: 20),
 
           // Carrega o widget customizado PlayPauseButton que controla o
           // play/stop do player
@@ -73,6 +78,39 @@ class ViewData extends StatelessWidget {
             borderColor: kColorBorderButton,
             initialPlaying: player.playing,
             onPressed: radioService.togglePlayPause,
+          ),
+          Expanded(
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(bottom: 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ButtonSocialMedia(
+                    onPressed: () {
+                      SocialMediaService.openWhatsapp(phone: '5584987015547');
+                    },
+                    icon: FontAwesomeIcons.whatsapp,
+                    iconSize: 24,
+                    iconColor: kColor2,
+                    label: 'Whatsapp',
+                    labelColor: kColor2,
+                    borderColor: kColorBorderButton,
+                  ),
+                  ButtonSocialMedia(
+                    onPressed: () {
+                      SocialMediaService.openInstagram('prmorais_13');
+                    },
+                    icon: FontAwesomeIcons.instagram,
+                    iconSize: 24,
+                    iconColor: kColor2,
+                    label: 'Instagram',
+                    labelColor: kColor2,
+                    borderColor: kColorBorderButton,
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

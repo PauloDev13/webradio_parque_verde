@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
+import 'package:webradio_parque_verde/constants.dart';
 
 class WaveForm extends StatelessWidget {
   const WaveForm({
@@ -21,12 +22,12 @@ class WaveForm extends StatelessWidget {
         width: 230,
         style: WaveformStyle(
           waveformStyle: WaveformDrawStyle.bars,
-          waveColor: Color(0xFF03ebff),
-          backgroundColor: Color(0x00ff5722),
-          barCount: 18,
-          barSpacing: 2.0,
-          strokeWidth: 2.0,
-          showGradient: true,
+          waveColor: kColor2,
+          backgroundColor: Colors.transparent,
+          barCount: 40,
+          barSpacing: 1.0,
+          strokeWidth: 1.0,
+          showGradient: false,
           gradientBegin: Alignment.topCenter,
           gradientEnd: Alignment.bottomCenter,
           animationDuration: playing ? Duration(seconds: 1) : Duration.zero,

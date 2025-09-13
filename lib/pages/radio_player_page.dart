@@ -26,9 +26,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
     player: player,
     streamUrl: streamUrl,
   );
-
   String? _coverUrl;
-  // String _coverUrl = kLinkLogo;
   String? _lastSong;
 
   @override
@@ -115,7 +113,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
-                      padding: EdgeInsets.only(top: 150),
+                      padding: EdgeInsets.only(top: 160),
                       child: ViewData(
                         player: player,
                         waveController: _waveController,
@@ -138,7 +136,13 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                   ),
                 );
               } else {
-                return LoadSpinner(padding: EdgeInsets.only(top: 210));
+                return BackgroundContainer(
+                  padding: EdgeInsets.only(top: 210),
+                  child: Text(
+                    'Erro conectar à rádio',
+                    style: kErroConexaoStyle,
+                  ),
+                );
               } // fim if
             }, // Builder
           ),

@@ -38,6 +38,9 @@ dependencies:
   http: ^1.5.0
 #  siri_wave: ^2.3.0
   waveform_visualizer: ^1.0.0
+  flutter_audio_visualizer: ^0.0.1
+  font_awesome_flutter: ^10.10.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
