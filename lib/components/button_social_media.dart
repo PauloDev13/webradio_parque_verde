@@ -26,7 +26,15 @@ class ButtonSocialMedia extends StatelessWidget {
     return OutlinedButton.icon(
       onPressed: onPressed,
       icon: FaIcon(icon, color: iconColor, size: iconSize),
-      label: Text(label, style: TextStyle(color: labelColor, fontSize: 12)),
+      label: Text(
+        label,
+        style: TextStyle(
+          color: labelColor,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Michroma',
+        ),
+      ),
       style: OutlinedButton.styleFrom(
         backgroundColor: kColor3,
         side: BorderSide(color: borderColor, width: 2),

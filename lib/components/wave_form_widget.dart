@@ -15,10 +15,10 @@ class WaveFormWidget extends StatelessWidget {
       style: AudioVisualizerStyle(
         waveformColor: kColor2,
         backgroundColor: Colors.transparent,
-        barWidth: 2.6,
+        barWidth: 2.5,
         barSpacing: 1.0,
         animationDuration: playing
-            ? Duration(milliseconds: 150)
+            ? Duration(milliseconds: 160)
             : Duration.zero,
         gradient: LinearGradient(
           colors: [kColor3, kColor2],

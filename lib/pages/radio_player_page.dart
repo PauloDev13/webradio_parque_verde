@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
 import 'package:webradio_parque_verde/components/background_container.dart';
+import 'package:webradio_parque_verde/components/button_social_media.dart';
 import 'package:webradio_parque_verde/components/load_spinner.dart';
 
 // Imports locais
@@ -66,7 +68,15 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
     return Scaffold(
       backgroundColor: Color(0xFF001a2c),
       appBar: AppBar(
-        title: Text('Web Rádio', style: TextStyle(fontSize: 30)),
+        title: Text(
+          'Web Rádio',
+          style: TextStyle(
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Michroma',
+            color: kColor3,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: kColor2,
       ),
@@ -113,7 +123,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
-                      padding: EdgeInsets.only(top: 160),
+                      padding: EdgeInsets.only(top: 170),
                       child: ViewData(
                         player: player,
                         waveController: _waveController,
@@ -136,11 +146,24 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
                   ),
                 );
               } else {
-                return BackgroundContainer(
-                  padding: EdgeInsets.only(top: 210),
-                  child: Text(
-                    'Erro conectar à rádio',
-                    style: kErroConexaoStyle,
+                return Padding(
+                  padding: EdgeInsets.only(top: 220),
+                  child: Column(
+                    children: [
+                      Text('Erro conectar à rádio', style: kErroConexaoStyle),
+                      BackgroundContainer(
+                        padding: EdgeInsets.only(top: 10),
+                        child: ButtonSocialMedia(
+                          onPressed: radioService.startRadio,
+                          icon: FontAwesomeIcons.connectdevelop,
+                          iconColor: kColor2,
+                          borderColor: kColorBorderButton,
+                          labelColor: kColor2,
+                          label: 'Conectar',
+                          iconSize: 30,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               } // fim if
