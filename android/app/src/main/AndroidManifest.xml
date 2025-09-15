@@ -1,9 +1,15 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Permissões -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+<!--    <uses-permission android:name="android.permission.RECORD_AUDIO" />-->
+<!--    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />-->
+    <!-- Necessárias para streaming em background -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Android 14+ exige tipo explícito -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <!-- Obrigatório para Android 11+ (visibilidade de pacotes) -->
     <queries>
@@ -28,7 +34,7 @@
             android:usesCleartextTraffic="true">
 
         <activity
-                android:name=".MainActivity"
+                android:name="com.ryanheise.audioservice.AudioServiceActivity"
                 android:exported="true"
                 android:launchMode="singleTop"
                 android:taskAffinity=""
@@ -52,5 +58,26 @@
         <meta-data
                 android:name="flutterEmbedding"
                 android:value="2" />
+
+        <!-- Serviço de áudio foreground -->
+        <service
+                android:name="com.ryanheise.audioservice.AudioService"
+                android:exported="false"
+                android:foregroundServiceType="mediaPlayback"
+                tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <!-- Receiver para botões de mídia -->
+        <receiver
+                android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+                android:exported="false"
+                tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

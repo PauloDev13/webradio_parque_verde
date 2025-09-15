@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
@@ -36,7 +37,12 @@ class RadioService {
   // Inicia o player e conecta ao servidor de stream
   Future<void> startRadio() async {
     try {
-      await player.setAudioSource(AudioSource.uri(Uri.parse(streamUrl)));
+      await player.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(streamUrl),
+          tag: MediaItem(id: streamUrl, title: 'WebRádio'),
+        ),
+      );
       await player.play();
     } catch (e) {
       debugPrint("Erro ao iniciar rádio: $e");
@@ -50,7 +56,12 @@ class RadioService {
     } else {
       try {
         // Reinicia stream para garantir áudio ao vivo
-        await player.setAudioSource(AudioSource.uri(Uri.parse(streamUrl)));
+        await player.setAudioSource(
+          AudioSource.uri(
+            Uri.parse(streamUrl),
+            tag: MediaItem(id: streamUrl, title: 'WebRádio'),
+          ),
+        );
         await player.play();
       } catch (e) {
         debugPrint("Erro ao iniciar rádio: $e");
@@ -58,13 +69,14 @@ class RadioService {
     }
   }
 
-  // Future<void> stopRadio() async {
-  //   try {
-  //     await player.stop();
-  //   } catch (e) {
-  //     debugPrint("Erro ao parar rádio: $e");
-  //   }
-  // }
+  Future<void> stopRadio() async {
+    try {
+      await player.stop();
+    } catch (e) {
+      debugPrint("Erro ao parar rádio: $e");
+    }
+  }
+
   // Busca a capa do álbum usando a url do provedor de stream
   Future<String?> fetchCover() async {
     try {
