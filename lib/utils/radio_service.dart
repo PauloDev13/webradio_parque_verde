@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:audio_service/audio_service.dart';
@@ -11,14 +12,17 @@ import '../constants.dart';
 // Enum
 enum RadioStatus { idle, loading, ready, error }
 
-class RadioService {
+class RadioService extends BaseAudioHandler {
   // Variáveis globais
   final AudioPlayer player;
-  final String streamUrl;
-  late final Stream<RadioStatus> statusStream;
+
   // Construtor
-  RadioService({required this.player, required this.streamUrl}) {
-    statusStream = player.processingStateStream
+  RadioService({required this.player}) {
+    // Atualiza o estado de playback para o sistema
+    player.playbackEventStream.map(_transformEvent).pipe(playbackState);
+
+    // Status interno para UI
+    player.processingStateStream
         .map((state) {
           switch (state) {
             case ProcessingState.loading:
@@ -31,67 +35,69 @@ class RadioService {
               return RadioStatus.idle;
           }
         })
-        .handleError((_) => RadioStatus.error);
+        .handleError((_) => RadioStatus.error)
+        .pipe(_statusController);
+  }
+
+  // StreamController para status interno
+  final _statusController = StreamController<RadioStatus>.broadcast();
+  Stream<RadioStatus> get statusStream => _statusController.stream;
+
+  // Converte eventos do just_audio para AudioService PlaybackState
+  PlaybackState _transformEvent(PlaybackEvent event) {
+    return PlaybackState(
+      controls: [MediaControl.play, MediaControl.pause, MediaControl.stop],
+      systemActions: const {
+        MediaAction.play,
+        MediaAction.pause,
+        MediaAction.stop,
+      },
+      androidCompactActionIndices: const [0, 1],
+      processingState: {
+        ProcessingState.idle: AudioProcessingState.idle,
+        ProcessingState.loading: AudioProcessingState.loading,
+        ProcessingState.buffering: AudioProcessingState.buffering,
+        ProcessingState.ready: AudioProcessingState.ready,
+        ProcessingState.completed: AudioProcessingState.completed,
+      }[player.processingState]!,
+      playing: player.playing,
+      updatePosition: player.position,
+      bufferedPosition: player.bufferedPosition,
+      speed: player.speed,
+      queueIndex: event.currentIndex,
+    );
   }
 
   // Inicia o player e conecta ao servidor de stream
   Future<void> startRadio() async {
     try {
-      await player.setAudioSource(
-        AudioSource.uri(
-          Uri.parse(streamUrl),
-          tag: MediaItem(id: streamUrl, title: 'WebRádio'),
-        ),
-      );
+      await player.setAudioSource(AudioSource.uri(Uri.parse(kUrlServer)));
       await player.play();
     } catch (e) {
       debugPrint("Erro ao iniciar rádio: $e");
     }
   }
 
+  // Ativa o play
+  @override
+  Future<void> play() => player.play();
+  // Ativa o pause
+  @override
+  Future<void> pause() => player.pause();
+  // Ativa o pause
+  @override
+  Future<void> stop() async {
+    await player.stop();
+    await super.stop();
+  }
+
   // Controla o botão de play/stop
   Future<void> togglePlayPause() async {
     if (player.playing) {
-      await player.pause();
+      await pause();
     } else {
-      try {
-        // Reinicia stream para garantir áudio ao vivo
-        await player.setAudioSource(
-          AudioSource.uri(
-            Uri.parse(streamUrl),
-            tag: MediaItem(id: streamUrl, title: 'WebRádio'),
-          ),
-        );
-        await player.play();
-      } catch (e) {
-        debugPrint("Erro ao iniciar rádio: $e");
-      }
+      await startRadio();
     }
-  }
-
-  Future<void> stopRadio() async {
-    try {
-      await player.stop();
-    } catch (e) {
-      debugPrint("Erro ao parar rádio: $e");
-    }
-  }
-
-  // Busca a capa do álbum usando a url do provedor de stream
-  Future<String?> fetchCover() async {
-    try {
-      final response = await http.get(Uri.parse(kUrlCover));
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data["data"]?[0]?["track"]?["imageurl"];
-      } else {
-        return kUrlFallback;
-      }
-    } catch (e) {
-      debugPrint("Erro ao buscar capa: $e");
-    }
-    return kUrlFallback;
   }
 
   // Exclui do nome da música os caracteres que vêm por padrão dentro de [] no

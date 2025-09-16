@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
-import 'package:webradio_parque_verde/components/background_container.dart';
-import 'package:webradio_parque_verde/components/button_social_media.dart';
-import 'package:webradio_parque_verde/components/load_spinner.dart';
 
 // Imports locais
+import '../components/background_container.dart';
+import '../components/button_social_media.dart';
+import '../components/load_spinner.dart';
 import '../components/view_data.dart';
 import '../constants.dart';
 import '../utils/radio_service.dart';
@@ -20,24 +20,45 @@ class RadioPlayerPage extends StatefulWidget {
   State<RadioPlayerPage> createState() => _RadioPlayerPageState();
 }
 
-class _RadioPlayerPageState extends State<RadioPlayerPage> {
+class _RadioPlayerPageState extends State<RadioPlayerPage>
+    with WidgetsBindingObserver {
+  // variáveis locais
   final AudioPlayer player = AudioPlayer();
-  final String streamUrl = kUrlServer;
   late WaveformController _waveController;
-  late final RadioService radioService = RadioService(
-    player: player,
-    streamUrl: streamUrl,
-  );
+  late final RadioService radioService = RadioService(player: player);
   String? _coverUrl;
   String? _lastSong;
 
   @override
   void initState() {
     super.initState();
-    // _coverUrl = kLinkLogo;
+    // coloca a instância da RadioPlayerPage no observer
+    WidgetsBinding.instance.addObserver(this);
     _waveController = WaveformController();
-    // Chama startRadio para iniciar o player
+    //iniciar o player
     radioService.startRadio();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      radioService.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    // remove a instancia da RadioPlayerPage do observer
+    WidgetsBinding.instance.removeObserver(this);
+    // para o player se o aplicativo for fechado
+    () async {
+      await radioService.stop();
+    }();
+    // destrói a instancia do player
+    player.dispose();
+    // destrói a instancia do waveform
+    _waveController.dispose();
+    super.dispose();
   }
 
   // Atualiza a capa do álbum quando a música muda
@@ -54,13 +75,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage> {
         _lastSong = song;
       });
     }
-  }
-
-  @override
-  void dispose() {
-    player.dispose();
-    _waveController.dispose();
-    super.dispose();
   }
 
   @override
