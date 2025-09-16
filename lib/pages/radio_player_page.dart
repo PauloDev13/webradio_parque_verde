@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
+import 'package:webradio_parque_verde/main.dart';
 
 // Imports locais
 import '../components/background_container.dart';
@@ -23,9 +24,7 @@ class RadioPlayerPage extends StatefulWidget {
 class _RadioPlayerPageState extends State<RadioPlayerPage>
     with WidgetsBindingObserver {
   // variáveis locais
-  final AudioPlayer player = AudioPlayer();
   late WaveformController _waveController;
-  late final RadioService radioService = RadioService(player: player);
   String? _coverUrl;
   String? _lastSong;
 
@@ -51,11 +50,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     // remove a instancia da RadioPlayerPage do observer
     WidgetsBinding.instance.removeObserver(this);
     // para o player se o aplicativo for fechado
-    () async {
-      await radioService.stop();
-    }();
-    // destrói a instancia do player
-    player.dispose();
+    radioService.stop();
     // destrói a instancia do waveform
     _waveController.dispose();
     super.dispose();
@@ -65,7 +60,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
   Future<void> _updateCover({
     required String artist,
     required String song,
-    required bool playing,
   }) async {
     if (_lastSong != song) {
       final newCover = await radioService.fetchCoverItunes(artist, song);
@@ -107,13 +101,14 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
             stream: radioService.statusStream,
             builder: (context, snapshot) {
               final status = snapshot.data ?? RadioStatus.idle;
+              final player = radioService.player;
 
               if (status == RadioStatus.ready) {
                 return StreamBuilder<IcyMetadata?>(
                   stream: player.icyMetadataStream,
                   builder: (context, snapshot) {
+                    // variáveis locais
                     final icy = snapshot.data;
-
                     final playing = player.playing;
                     final rawTitle = icy?.info?.title ?? '';
                     final parts = rawTitle.split(' - ');
@@ -126,20 +121,16 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                         ? radioService.limparTitulo(nameSong)
                         : 'Sem informação...';
 
-                    if (rawTitle.isNotEmpty || playing) {
-                      // chama função que retorna a url com
-                      _updateCover(
-                        artist: artist,
-                        song: song,
-                        playing: playing,
-                      );
+                    if (rawTitle.isNotEmpty && playing) {
+                      // chama função que retorna a capa do álbum da música em
+                      // execução
+                      _updateCover(artist: artist, song: song);
                     }
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
                       padding: EdgeInsets.only(top: 170),
                       child: ViewData(
-                        player: player,
                         waveController: _waveController,
                         radioService: radioService,
                         coverUrl: _coverUrl,

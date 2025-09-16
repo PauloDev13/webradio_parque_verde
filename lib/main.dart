@@ -16,6 +16,8 @@ Future<void> main() async {
       androidNotificationChannelId: 'com.example.webradio_parque_verde',
       androidNotificationChannelName: 'WebRádio',
       androidNotificationOngoing: true,
+      androidStopForegroundOnPause: true,
+      androidNotificationIcon: 'mipmap/ic_launcer',
     ),
   );
   runApp(const WebradioApp());

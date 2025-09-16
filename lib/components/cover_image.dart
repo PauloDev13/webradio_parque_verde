@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:webradio_parque_verde/components/ClipRectCover.dart';
 import 'package:webradio_parque_verde/constants.dart';
 
 class Cover extends StatelessWidget {
@@ -8,6 +9,11 @@ class Cover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool imageCover;
+    _coverUrl != null && _coverUrl.startsWith('http')
+        ? imageCover = true
+        : imageCover = false;
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -16,21 +22,9 @@ class Cover extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Image.network(
-          _coverUrl ?? kUrlFallback,
-          height: 140,
-          width: 140,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Image.asset(
-            'assets/logo_retangular.jpg',
-            height: 140,
-            width: 140,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
+      child: imageCover
+          ? ClipRectCover(coverUrl: _coverUrl)
+          : ClipRectCover(coverUrl: _coverUrl),
     );
   }
 }

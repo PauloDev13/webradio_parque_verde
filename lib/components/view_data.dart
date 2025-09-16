@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:waveform_visualizer/waveform_visualizer.dart';
 
 import '../components/button_social_media.dart';
@@ -16,7 +15,7 @@ import 'text_info.dart';
 class ViewData extends StatelessWidget {
   const ViewData({
     super.key,
-    required this.player,
+    // required this.player,
     required WaveformController waveController,
     required this.radioService,
     required String? coverUrl,
@@ -25,7 +24,7 @@ class ViewData extends StatelessWidget {
   }) : _waveController = waveController,
        _coverUrl = coverUrl;
 
-  final AudioPlayer player;
+  // final AudioPlayer player;
   final WaveformController _waveController;
   final RadioService radioService;
   final String? _coverUrl;
@@ -34,6 +33,9 @@ class ViewData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Variável local
+    final player = radioService.player;
+
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20),
       child: Column(

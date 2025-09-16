@@ -11,7 +11,7 @@ const kColorBorderButton = Color(0x9003ebff);
 
 const kUrlServer = 'https://usa13.fastcast4u.com/proxy/parqueverde?mp=/1';
 const kUrlCover = 'https://usa13.fastcast4u.com/rpc/parqueverde/streaminfo.get';
-const kUrlFallback = 'https://via.placeholder.com/100.png?text=Sem+Capa';
+const kUrlFallback = 'assets/logo_retangular.jpg';
 
 const kArtistTextStyle = TextStyle(
   fontSize: 16,
