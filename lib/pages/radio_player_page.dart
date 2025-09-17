@@ -125,6 +125,8 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                       // chama função que retorna a capa do álbum da música em
                       // execução
                       _updateCover(artist: artist, song: song);
+                    } else {
+                      _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
                     }
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
