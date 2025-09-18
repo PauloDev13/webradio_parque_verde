@@ -52,10 +52,10 @@ class ViewData extends StatelessWidget {
               Cover(coverUrl: _coverUrl),
 
               Padding(
-                padding: const EdgeInsets.only(top: 150),
+                padding: const EdgeInsets.only(top: 160),
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: 50),
+                    SizedBox(height: 60),
                     // títulos do artista e música em execução
                     TextInfo(metadata: artist, textStyle: kArtistTextStyle),
                     TextInfo(metadata: song, textStyle: kASongTextStyle),

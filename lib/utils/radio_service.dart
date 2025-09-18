@@ -107,6 +107,23 @@ class RadioService extends BaseAudioHandler {
     return titulo.replaceAll(RegExp(r'\s*\[[^\]]*\]$'), '').trim();
   }
 
+  // Busca a capa do álbum usando a url do provedor de stream
+  Future<String?> fetchCover() async {
+    try {
+      final response = await http.get(Uri.parse(kUrlCover));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data["data"]?[0]?["track"]?["imageurl"];
+      } else {
+        return kUrlFallback;
+      }
+    } catch (e) {
+      debugPrint("Erro ao buscar capa: $e");
+    }
+    return kUrlFallback;
+  }
+
   // Usa a API do iTunes para buscar a capa do álbum passando o nome do
   // artista e o título da música
   Future<String> fetchCoverItunes(String artist, String music) async {

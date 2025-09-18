@@ -58,6 +58,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     required String song,
   }) async {
     if (_lastSong != song) {
+      // final newCover = await radioService.fetchCover();
       final newCover = await radioService.fetchCoverItunes(artist, song);
 
       setState(() {
@@ -127,7 +128,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
-                      padding: EdgeInsets.only(top: 110),
+                      padding: EdgeInsets.only(top: 120),
                       child: ViewData(
                         // waveController: _waveController,
                         radioService: radioService,
