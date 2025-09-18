@@ -43,7 +43,8 @@ dependencies:
   url_launcher: ^6.3.2
   just_audio_background: ^0.0.1-beta.17
   audio_service: ^0.18.18
-  lottie: ^3.3.2
+  lottie:
+  animated_splash_screen:
 
 dev_dependencies:
   flutter_native_splash: ^2.4.6
@@ -60,18 +61,18 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
-flutter_native_splash:
-  android: true
-  ios: false
-
-  color: "#001b28"
-  image: assets/splashscreen.png
-  branding: assets/brandingimage.png
-
-  android_12:
-    color: "#001b28"
-    image: assets/android12splash.png
-    branding: assets/brandingimage.png
+#flutter_native_splash:
+#  android: true
+#  ios: false
+#
+#  color: "#001b28"
+#  image: assets/splashscreen.png
+#  branding: assets/brandingimage.png
+#
+#  android_12:
+#    color: "#001b28"
+#    image: assets/android12splash.png
+#    branding: assets/brandingimage.png
 
 # The following section is specific to Flutter packages.
 flutter:
