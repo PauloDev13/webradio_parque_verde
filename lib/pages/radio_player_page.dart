@@ -3,15 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:waveform_visualizer/waveform_visualizer.dart';
-import 'package:webradio_parque_verde/main.dart';
 
-// Imports locais
 import '../components/background_container.dart';
 import '../components/button_social_media.dart';
 import '../components/load_spinner.dart';
 import '../components/view_data.dart';
 import '../constants.dart';
+// Imports locais
+import '../main.dart';
 import '../utils/radio_service.dart';
 
 class RadioPlayerPage extends StatefulWidget {
@@ -24,7 +23,6 @@ class RadioPlayerPage extends StatefulWidget {
 class _RadioPlayerPageState extends State<RadioPlayerPage>
     with WidgetsBindingObserver {
   // variáveis locais
-  late WaveformController _waveController;
   String? _coverUrl;
   String? _lastSong;
 
@@ -33,7 +31,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     super.initState();
     // coloca a instância da RadioPlayerPage no observer
     WidgetsBinding.instance.addObserver(this);
-    _waveController = WaveformController();
     //iniciar o player
     radioService.startRadio();
   }
@@ -52,7 +49,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     // para o player se o aplicativo for fechado
     radioService.stop();
     // destrói a instancia do waveform
-    _waveController.dispose();
     super.dispose();
   }
 
@@ -76,7 +72,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     return Scaffold(
       backgroundColor: Color(0xFF001a2c),
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Web Rádio',
           style: TextStyle(
             fontSize: 21,
@@ -131,9 +127,9 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
-                      padding: EdgeInsets.only(top: 170),
+                      padding: EdgeInsets.only(top: 110),
                       child: ViewData(
-                        waveController: _waveController,
+                        // waveController: _waveController,
                         radioService: radioService,
                         coverUrl: _coverUrl,
                         artist: artist,
@@ -143,11 +139,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                   }, //Builder
                 );
               } else if (status == RadioStatus.loading) {
-                return LoadSpinner(padding: EdgeInsets.only(top: 210));
+                return const LoadSpinner(padding: EdgeInsets.only(top: 210));
               } else if (status == RadioStatus.error) {
                 return BackgroundContainer(
                   padding: EdgeInsets.only(top: 210),
-                  child: Text(
+                  child: const Text(
                     'Erro conectar à rádio',
                     style: kErroConexaoStyle,
                   ),
@@ -157,7 +153,10 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                   padding: EdgeInsets.only(top: 220),
                   child: Column(
                     children: [
-                      Text('Erro conectar à rádio', style: kErroConexaoStyle),
+                      const Text(
+                        'Erro conectar à rádio',
+                        style: kErroConexaoStyle,
+                      ),
                       BackgroundContainer(
                         padding: EdgeInsets.only(top: 10),
                         child: ButtonSocialMedia(

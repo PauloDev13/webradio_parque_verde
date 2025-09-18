@@ -9,10 +9,10 @@ class Cover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool imageCover;
+    final bool urlCover;
     _coverUrl != null && _coverUrl.startsWith('http')
-        ? imageCover = true
-        : imageCover = false;
+        ? urlCover = true
+        : urlCover = false;
 
     return Container(
       decoration: BoxDecoration(
@@ -22,9 +22,7 @@ class Cover extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: imageCover
-          ? ClipRectCover(coverUrl: _coverUrl)
-          : ClipRectCover(coverUrl: _coverUrl),
+      child: ClipRectCover(coverUrl: _coverUrl, urlCover: urlCover),
     );
   }
 }

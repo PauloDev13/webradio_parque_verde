@@ -1,31 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:waveform_visualizer/waveform_visualizer.dart';
 
 import '../components/button_social_media.dart';
-import '../components/wave_form_widget.dart';
-// import '../components/wave_controller.dart';
+import '../components/cover_image.dart';
+import '../components/wave_form_json.dart';
 import '../constants.dart';
 import '../utils//social_media_service.dart';
 import '../utils/radio_service.dart';
 import 'button_play_stop.dart';
-import 'cover_image.dart';
 import 'text_info.dart';
 
 class ViewData extends StatelessWidget {
   const ViewData({
     super.key,
-    // required this.player,
-    required WaveformController waveController,
     required this.radioService,
     required String? coverUrl,
     required this.artist,
     required this.song,
-  }) : _waveController = waveController,
-       _coverUrl = coverUrl;
+  }) : _coverUrl = coverUrl;
 
-  // final AudioPlayer player;
-  final WaveformController _waveController;
   final RadioService radioService;
   final String? _coverUrl;
   final String artist;
@@ -48,27 +41,29 @@ class ViewData extends StatelessWidget {
                 initialData: player.playing,
                 builder: (context, snapshot) {
                   final playing = snapshot.data ?? false;
-                  // Carrega o widget customizado WaveForm que exibe ondas
-                  // de aúdio
-                  return WaveFormWidget(playing: playing);
-                  // return WaveForm(
-                  //   waveController: _waveController,
-                  //   playing: playing,
-                  // );
+
+                  // exibe animação de WaveForm de aúdio
+                  return WaveFormJson(playing: playing);
                 }, // builder
               ),
 
               // Carrega o widget customizado Cover que exibe a capa do
               // álbum do artista que está em execução
               Cover(coverUrl: _coverUrl),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 150),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 50),
+                    // títulos do artista e música em execução
+                    TextInfo(metadata: artist, textStyle: kArtistTextStyle),
+                    TextInfo(metadata: song, textStyle: kASongTextStyle),
+                  ],
+                ),
+              ),
             ],
           ),
-
-          SizedBox(height: 10),
-          // Carrega os widgets customizado TextInfo que exibe os nome do
-          // artista e música
-          TextInfo(metadata: artist, textStyle: kArtistTextStyle),
-          TextInfo(metadata: song, textStyle: kASongTextStyle),
 
           SizedBox(height: 10),
 

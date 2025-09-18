@@ -43,7 +43,7 @@ class PlayPauseButton extends StatelessWidget {
             ),
           ),
         );
-      },
+      }, // builder
     );
   }
 }
