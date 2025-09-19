@@ -49,7 +49,7 @@ class ViewData extends StatelessWidget {
 
               // Carrega o widget customizado Cover que exibe a capa do
               // álbum do artista que está em execução
-              Cover(coverUrl: _coverUrl),
+              Cover(coverUrl: _coverUrl, artist: artist),
 
               Padding(
                 padding: const EdgeInsets.only(top: 160),
@@ -65,7 +65,7 @@ class ViewData extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
 
           // Carrega o widget customizado PlayPauseButton que controla o
           // play/stop do player

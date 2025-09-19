@@ -3,22 +3,18 @@
 
     <!-- Permissões -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- Necessárias para streaming em background -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- Android 14+ exige tipo explícito -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
 
-    <!-- Obrigatório para Android 11+ (visibilidade de pacotes) -->
+    <!-- Visibilidade de pacotes (Android 11+) -->
     <queries>
         <!-- WhatsApp -->
-        <package android:name="com.whatsapp" />
-        <package android:name="com.whatsapp.w4b" /> <!-- WhatsApp Business -->
-
+        <package android:name="com.whatsapp"/>
+        <package android:name="com.whatsapp.w4b"/>
         <!-- Instagram -->
-        <package android:name="com.instagram.android" />
-
-        <!-- Já existia: Process Text -->
+        <package android:name="com.instagram.android"/>
+        <!-- Process Text -->
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
@@ -41,10 +37,10 @@
                 android:hardwareAccelerated="true"
                 android:windowSoftInputMode="adjustResize">
 
-            <!-- Tema inicial exibido até o Flutter carregar -->
+            <!-- Mantido vazio para NÃO exibir splash -->
             <meta-data
                     android:name="io.flutter.embedding.android.NormalTheme"
-                    android:resource="@style/NormalTheme" />
+                    android:resource="@style/LaunchTheme" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -52,10 +48,9 @@
             </intent-filter>
         </activity>
 
-        <!-- Necessário para integração Flutter -->
         <meta-data
                 android:name="flutterEmbedding"
-                android:value="2" />
+                android:value="2"/>
 
         <!-- Serviço de áudio foreground -->
         <service
@@ -64,17 +59,17 @@
                 android:foregroundServiceType="mediaPlayback"
                 tools:ignore="Instantiatable">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
+                <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>
 
-        <!-- Receiver para botões de mídia -->
+        <!-- Receiver de botões de mídia -->
         <receiver
                 android:name="com.ryanheise.audioservice.MediaButtonReceiver"
                 android:exported="false"
                 tools:ignore="Instantiatable">
             <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
             </intent-filter>
         </receiver>
     </application>

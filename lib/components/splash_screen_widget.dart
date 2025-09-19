@@ -10,26 +10,37 @@ class AnimatedSplashScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return AnimatedSplashScreen(
-      splash: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset('assets/background.jpg', fit: BoxFit.cover),
-          Center(
-            child: Lottie.asset(
-              'assets/animation/Walk_Cycle.json',
-              height: 200,
-              width: 200,
-            ),
+      splash: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/animation/animated_background.png'),
+            fit: BoxFit.cover,
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 40),
-              child: Image.asset('assets/brandingimage.png', height: 80),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 100),
+            SizedBox(
+              height: screenHeight / 3,
+              child: Center(
+                child: Lottie.asset(
+                  'assets/animation/Walk_Cycle.json',
+                  height: 200,
+                  fit: BoxFit.contain,
+                ), // Lottie
+              ),
             ),
-          ),
-        ],
+            Image.asset(
+              'assets/brandingimage.png',
+              height: 80,
+              fit: BoxFit.contain,
+            ),
+          ],
+        ),
       ),
 
       nextScreen: RadioPlayerPage(),

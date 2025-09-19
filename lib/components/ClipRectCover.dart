@@ -29,7 +29,7 @@ class ClipRectCover extends StatelessWidget {
               ),
             )
           : Image.asset(
-              kUrlFallback,
+              _coverUrl ?? '',
               height: 140,
               width: 140,
               fit: BoxFit.cover,

@@ -3,9 +3,12 @@ import 'package:webradio_parque_verde/components/ClipRectCover.dart';
 import 'package:webradio_parque_verde/constants.dart';
 
 class Cover extends StatelessWidget {
-  const Cover({super.key, required String? coverUrl}) : _coverUrl = coverUrl;
+  const Cover({super.key, required String? coverUrl, required String artist})
+    : _coverUrl = coverUrl,
+      _artist = artist;
 
   final String? _coverUrl;
+  final String _artist;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,9 @@ class Cover extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: ClipRectCover(coverUrl: _coverUrl, urlCover: urlCover),
+      child: _artist.isNotEmpty && _artist.startsWith('Paulo') && !urlCover
+          ? ClipRectCover(coverUrl: 'assets/locucao.png', urlCover: urlCover)
+          : ClipRectCover(coverUrl: _coverUrl, urlCover: urlCover),
     );
   }
 }
