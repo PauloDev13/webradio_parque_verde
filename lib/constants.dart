@@ -6,8 +6,8 @@ const kColor2 = Color(0xFF03ebff);
 const kColor3 = Color(0xFF000b11);
 
 // Cores com transparência
-const kColorBorderCover = Color(0x9003ebff);
-const kColorBorderButton = Color(0x9003ebff);
+const kColorBorderCover = Color(0xFF03ebff);
+const kColorBorderButton = Color(0xFF03ebff);
 
 const kUrlServer = 'https://usa13.fastcast4u.com/proxy/parqueverde?mp=/1';
 const kUrlCover = 'https://usa13.fastcast4u.com/rpc/parqueverde/streaminfo.get';

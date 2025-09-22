@@ -20,7 +20,7 @@ class Cover extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: kColorBorderCover, // cor da borda
+          color: kColorBorderCover.withValues(alpha: 0.8), // cor da borda
           width: 3,
         ),
         borderRadius: BorderRadius.circular(20),

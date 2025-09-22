@@ -72,7 +72,7 @@ class ViewData extends StatelessWidget {
           PlayPauseButton(
             playingStream: player.playingStream,
             backgroundColor: kColor3,
-            borderColor: kColorBorderButton,
+            borderColor: kColorBorderButton.withValues(alpha: 0.8),
             iconColor: kColor2,
             initialPlaying: player.playing,
             onPressed: radioService.togglePlayPause,
@@ -93,7 +93,7 @@ class ViewData extends StatelessWidget {
                     iconColor: kColor2,
                     label: 'Whatsapp',
                     labelColor: kColor2,
-                    borderColor: kColorBorderButton,
+                    borderColor: kColorBorderButton.withValues(alpha: 0.6),
                   ),
                   ButtonSocialMedia(
                     onPressed: () {
@@ -104,7 +104,7 @@ class ViewData extends StatelessWidget {
                     iconColor: kColor2,
                     label: 'Instagram',
                     labelColor: kColor2,
-                    borderColor: kColorBorderButton,
+                    borderColor: kColorBorderButton.withValues(alpha: 0.8),
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:webradio_parque_verde/constants.dart';
 
 // imports locais
 import '../pages/radio_player_page.dart';
@@ -46,6 +47,7 @@ class AnimatedSplashScreenWidget extends StatelessWidget {
       nextScreen: RadioPlayerPage(),
       splashIconSize: double.infinity,
       duration: 3000,
+      backgroundColor: kColor3,
     );
   }
 }

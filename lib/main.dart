@@ -1,11 +1,10 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-// import '../pages/radio_player_page.dart';
-import 'package:webradio_parque_verde/utils/radio_service.dart';
 
-// Importes locais
-import '../components/splash_screen_widget.dart';
+import 'components/splash_screen_widget.dart';
+// import '../pages/radio_player_page.dart';
+import 'utils/radio_service.dart';
 
 late final RadioService radioService;
 
