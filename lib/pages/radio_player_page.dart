@@ -92,6 +92,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
             image: DecorationImage(
               image: AssetImage('assets/background.jpg'),
               fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
             ),
           ),
           child: StreamBuilder<RadioStatus>(
@@ -128,13 +129,14 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
-                      padding: EdgeInsets.only(top: 120),
-                      child: ViewData(
-                        // waveController: _waveController,
-                        radioService: radioService,
-                        coverUrl: _coverUrl,
-                        artist: artist,
-                        song: song,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 80),
+                        child: ViewData(
+                          radioService: radioService,
+                          coverUrl: _coverUrl,
+                          artist: artist,
+                          song: song,
+                        ),
                       ),
                     );
                   }, //Builder
@@ -143,10 +145,13 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                 return const LoadSpinner(padding: EdgeInsets.only(top: 210));
               } else if (status == RadioStatus.error) {
                 return BackgroundContainer(
-                  padding: EdgeInsets.only(top: 210),
-                  child: const Text(
-                    'Erro conectar à rádio',
-                    style: kErroConexaoStyle,
+                  // padding: EdgeInsets.only(top: 210),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 210),
+                    child: const Text(
+                      'Erro conectar à rádio',
+                      style: kErroConexaoStyle,
+                    ),
                   ),
                 );
               } else {
@@ -159,15 +164,17 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                         style: kErroConexaoStyle,
                       ),
                       BackgroundContainer(
-                        padding: EdgeInsets.only(top: 10),
-                        child: ButtonSocialMedia(
-                          onPressed: radioService.startRadio,
-                          icon: FontAwesomeIcons.connectdevelop,
-                          iconColor: kColor2,
-                          borderColor: kColorBorderButton,
-                          labelColor: kColor2,
-                          label: 'Conectar',
-                          iconSize: 30,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: ButtonSocialMedia(
+                            onPressed: radioService.startRadio,
+                            icon: FontAwesomeIcons.connectdevelop,
+                            iconColor: kColor2,
+                            borderColor: kColorBorderButton,
+                            labelColor: kColor2,
+                            label: 'Conectar',
+                            iconSize: 30,
+                          ),
                         ),
                       ),
                     ],

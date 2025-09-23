@@ -11,7 +11,8 @@ class WaveFormJson extends StatelessWidget {
     return playing
         ? Lottie.asset(
             'assets/animation/Sound voice waves.json',
-            width: 250,
+            // width: 250,
+            height: 240,
             alignment: Alignment.topCenter,
           )
         : const SizedBox();

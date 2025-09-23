@@ -33,50 +33,64 @@ class ViewData extends StatelessWidget {
       padding: const EdgeInsets.only(right: 20, left: 20),
       child: Column(
         children: <Widget>[
-          Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              StreamBuilder(
-                stream: player.playingStream,
-                initialData: player.playing,
-                builder: (context, snapshot) {
-                  final playing = snapshot.data ?? false;
-
-                  // exibe animação de WaveForm de aúdio
-                  return WaveFormJson(playing: playing);
-                }, // builder
-              ),
-
-              // Carrega o widget customizado Cover que exibe a capa do
-              // álbum do artista que está em execução
-              Cover(coverUrl: _coverUrl, artist: artist),
-
-              Padding(
-                padding: const EdgeInsets.only(top: 160),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 60),
-                    // títulos do artista e música em execução
-                    TextInfo(metadata: artist, textStyle: kArtistTextStyle),
-                    TextInfo(metadata: song, textStyle: kASongTextStyle),
-                  ],
+          SizedBox(
+            width: double.infinity,
+            // altura do SizeBox de 45% da tela
+            height: MediaQuery.of(context).size.height * 0.45,
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Align(
+                  // waveform fica posicionado verticamente em 35% do SizeBox
+                  alignment: const FractionalOffset(0.5, 0.35),
+                  child: StreamBuilder(
+                    stream: player.playingStream,
+                    initialData: player.playing,
+                    builder: (context, snapshot) {
+                      final playing = snapshot.data ?? false;
+                      // exibe animação de WaveForm de aúdio
+                      return WaveFormJson(playing: playing);
+                    }, // builder
+                  ),
                 ),
-              ),
-            ],
+
+                Align(
+                  // a capa fica posicionado verticamente em 32% do SizeBox
+                  alignment: const FractionalOffset(0.5, 0.32),
+                  // Carrega o widget customizado Cover que exibe a capa do
+                  // álbum do artista que está em execução
+                  child: Cover(coverUrl: _coverUrl, artist: artist),
+                ),
+
+                Align(
+                  // os títulos fica posicionado verticamente em 90% do SizeBox
+                  alignment: const FractionalOffset(0.5, 0.9),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      // títulos do artista e música em execução
+                      TextInfo(metadata: artist, textStyle: kArtistTextStyle),
+                      TextInfo(metadata: song, textStyle: kASongTextStyle),
+
+                      SizedBox(height: 20),
+                      // Carrega o widget customizado PlayPauseButton que controla o
+                      // play/stop do player
+                      PlayPauseButton(
+                        playingStream: player.playingStream,
+                        backgroundColor: kColor3,
+                        borderColor: kColorBorderButton.withValues(alpha: 0.8),
+                        iconColor: kColor2,
+                        initialPlaying: player.playing,
+                        onPressed: radioService.togglePlayPause,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
 
-          const SizedBox(height: 10),
-
-          // Carrega o widget customizado PlayPauseButton que controla o
-          // play/stop do player
-          PlayPauseButton(
-            playingStream: player.playingStream,
-            backgroundColor: kColor3,
-            borderColor: kColorBorderButton.withValues(alpha: 0.8),
-            iconColor: kColor2,
-            initialPlaying: player.playing,
-            onPressed: radioService.togglePlayPause,
-          ),
+          // Botões do Instagram e Whatsapp
           Expanded(
             child: Container(
               alignment: Alignment.bottomCenter,
