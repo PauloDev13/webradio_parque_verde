@@ -1,6 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:webradio_parque_verde/constants.dart';
 
 // imports locais
@@ -46,6 +47,8 @@ class AnimatedSplashScreenWidget extends StatelessWidget {
 
       nextScreen: RadioPlayerPage(),
       splashIconSize: double.infinity,
+      splashTransition: SplashTransition.fadeTransition,
+      pageTransitionType: PageTransitionType.leftToRight,
       duration: 3000,
       backgroundColor: kColor3,
     );

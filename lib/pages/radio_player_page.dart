@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:webradio_parque_verde/components/erro_dialog_connection.dart';
 
 import '../components/background_container.dart';
-import '../components/button_social_media.dart';
 import '../components/load_spinner.dart';
 import '../components/view_data.dart';
 import '../constants.dart';
@@ -100,6 +99,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
             builder: (context, snapshot) {
               final status = snapshot.data ?? RadioStatus.idle;
               final player = radioService.player;
+              bool _dialogOpen = false;
 
               if (status == RadioStatus.ready) {
                 return StreamBuilder<IcyMetadata?>(
@@ -155,31 +155,49 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                   ),
                 );
               } else {
-                return Padding(
-                  padding: EdgeInsets.only(top: 220),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Erro conectar à rádio',
-                        style: kErroConexaoStyle,
-                      ),
-                      BackgroundContainer(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: ButtonSocialMedia(
-                            onPressed: radioService.startRadio,
-                            icon: FontAwesomeIcons.connectdevelop,
-                            iconColor: kColor2,
-                            borderColor: kColorBorderButton,
-                            labelColor: kColor2,
-                            label: 'Conectar',
-                            iconSize: 30,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                if (!_dialogOpen) {
+                  _dialogOpen = true;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    showDialog(
+                      context: context,
+                      builder: (dialogContext) {
+                        return ErroDialogConnection(
+                          onRetry: () {
+                            Navigator.of(dialogContext).pop();
+                            _dialogOpen = false;
+                            radioService.startRadio();
+                          },
+                        );
+                      },
+                    );
+                  });
+                }
+                return SizedBox.shrink();
+                // return Padding(
+                //   padding: EdgeInsets.only(top: 100),
+                //   child: Column(
+                //     children: [
+                //       const Text(
+                //         'Erro conectar à rádio',
+                //         style: kErroConexaoStyle,
+                //       ),
+                //       // BackgroundContainer(
+                //       //   child: Padding(
+                //       //     padding: const EdgeInsets.only(top: 10),
+                //       //     child: ButtonSocialMedia(
+                //       //       onPressed: radioService.startRadio,
+                //       //       icon: FontAwesomeIcons.connectdevelop,
+                //       //       iconColor: kColor2,
+                //       //       borderColor: kColorBorderButton,
+                //       //       labelColor: kColor2,
+                //       //       label: 'Conectar',
+                //       //       iconSize: 30,
+                //       //     ),
+                //       //   ),
+                //       // ),
+                //     ],
+                //   ),
+                // );
               } // fim if
             }, // Builder
           ),

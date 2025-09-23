@@ -45,6 +45,7 @@ dependencies:
   audio_service: ^0.18.18
   lottie:
   animated_splash_screen:
+  page_transition: ^2.2.1
 
 dev_dependencies:
   flutter_native_splash: ^2.4.6
