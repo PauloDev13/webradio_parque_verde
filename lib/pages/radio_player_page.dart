@@ -24,6 +24,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
   // variáveis locais
   String? _coverUrl;
   String? _lastSong;
+  bool _dialogOpen = false;
 
   @override
   void initState() {
@@ -99,7 +100,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
             builder: (context, snapshot) {
               final status = snapshot.data ?? RadioStatus.idle;
               final player = radioService.player;
-              bool _dialogOpen = false;
 
               if (status == RadioStatus.ready) {
                 return StreamBuilder<IcyMetadata?>(
@@ -125,7 +125,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                       _updateCover(artist: artist, song: song);
                     } else {
                       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
-                    }
+                    } // fim if
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
@@ -141,64 +141,50 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     );
                   }, //Builder
                 );
-              } else if (status == RadioStatus.loading) {
-                return const LoadSpinner(padding: EdgeInsets.only(top: 210));
-              } else if (status == RadioStatus.error) {
-                return BackgroundContainer(
-                  // padding: EdgeInsets.only(top: 210),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 210),
-                    child: const Text(
-                      'Erro conectar à rádio',
-                      style: kErroConexaoStyle,
-                    ),
-                  ),
-                );
-              } else {
-                if (!_dialogOpen) {
-                  _dialogOpen = true;
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    showDialog(
-                      context: context,
-                      builder: (dialogContext) {
-                        return ErroDialogConnection(
-                          onRetry: () {
-                            Navigator.of(dialogContext).pop();
-                            _dialogOpen = false;
-                            radioService.startRadio();
-                          },
-                        );
-                      },
-                    );
-                  });
-                }
-                return SizedBox.shrink();
-                // return Padding(
-                //   padding: EdgeInsets.only(top: 100),
-                //   child: Column(
-                //     children: [
-                //       const Text(
-                //         'Erro conectar à rádio',
-                //         style: kErroConexaoStyle,
-                //       ),
-                //       // BackgroundContainer(
-                //       //   child: Padding(
-                //       //     padding: const EdgeInsets.only(top: 10),
-                //       //     child: ButtonSocialMedia(
-                //       //       onPressed: radioService.startRadio,
-                //       //       icon: FontAwesomeIcons.connectdevelop,
-                //       //       iconColor: kColor2,
-                //       //       borderColor: kColorBorderButton,
-                //       //       labelColor: kColor2,
-                //       //       label: 'Conectar',
-                //       //       iconSize: 30,
-                //       //     ),
-                //       //   ),
-                //       // ),
-                //     ],
-                //   ),
-                // );
               } // fim if
+              else if (status == RadioStatus.loading) {
+                return const LoadSpinner(padding: EdgeInsets.only(top: 210));
+              } // fim if
+              else if (status == RadioStatus.error && !_dialogOpen) {
+                _dialogOpen = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (dialogContext) {
+                      return ErroDialogConnection(
+                        onRetry: () {
+                          radioService.startRadio();
+                          _dialogOpen = false;
+                          Navigator.of(dialogContext).pop();
+                        },
+                      );
+                    },
+                  ).then((_) => _dialogOpen = false);
+                }); // WidgetsBinding
+              } // fim if
+              else if (status == RadioStatus.completed &&
+                  !_dialogOpen &&
+                  player.playing) {
+                _dialogOpen = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (dialogContext) {
+                      return ErroDialogConnection(
+                        onRetry: () {
+                          radioService.startRadio();
+                          _dialogOpen = false;
+                          Navigator.of(dialogContext).pop();
+                        },
+                      );
+                    },
+                  ).then((_) => _dialogOpen = false);
+                }); // WidgetsBinding
+              }
+              // deixa o spinner ativo por trás do dialog de erro
+              return const LoadSpinner(padding: EdgeInsets.only(top: 210));
             }, // Builder
           ),
         ),

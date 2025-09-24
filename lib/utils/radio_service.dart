@@ -10,7 +10,7 @@ import 'package:just_audio/just_audio.dart';
 import '../constants.dart';
 
 // Enum
-enum RadioStatus { idle, loading, ready, error }
+enum RadioStatus { idle, loading, ready, completed, error }
 
 class RadioService extends BaseAudioHandler {
   // Variáveis globais
@@ -22,21 +22,28 @@ class RadioService extends BaseAudioHandler {
     player.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
     // Status interno para UI
-    player.processingStateStream
-        .map((state) {
-          switch (state) {
-            case ProcessingState.loading:
-            case ProcessingState.buffering:
-              return RadioStatus.loading;
-            case ProcessingState.ready:
-              return RadioStatus.ready;
-            case ProcessingState.completed:
-            case ProcessingState.idle:
-              return RadioStatus.idle;
-          }
-        })
-        .handleError((_) => RadioStatus.error)
-        .pipe(_statusController);
+    player.processingStateStream.listen(
+      (state) {
+        switch (state) {
+          case ProcessingState.loading:
+          case ProcessingState.buffering:
+            _statusController.add(RadioStatus.loading);
+            break;
+          case ProcessingState.ready:
+            _statusController.add(RadioStatus.ready);
+            break;
+          case ProcessingState.completed:
+            _statusController.add(RadioStatus.completed);
+            break;
+          case ProcessingState.idle:
+            _statusController.add(RadioStatus.idle);
+            break;
+        }
+      },
+      onError: (_) {
+        _statusController.add(RadioStatus.error);
+      },
+    );
   }
 
   // StreamController para status interno
@@ -70,11 +77,14 @@ class RadioService extends BaseAudioHandler {
 
   // Inicia o player e conecta ao servidor de stream
   Future<void> startRadio() async {
+    _statusController.add(RadioStatus.loading);
     try {
       await player.setAudioSource(AudioSource.uri(Uri.parse(kUrlServer)));
       await player.play();
+      _statusController.add(RadioStatus.ready);
     } catch (e) {
       debugPrint("Erro ao iniciar rádio: $e");
+      _statusController.add(RadioStatus.error);
     }
   }
 

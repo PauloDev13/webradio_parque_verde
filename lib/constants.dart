@@ -29,7 +29,7 @@ const kASongTextStyle = TextStyle(
 );
 
 const kErroConexaoStyle = TextStyle(
-  fontSize: 12,
+  fontSize: 16,
   fontFamily: 'Michroma',
   color: Colors.redAccent,
   fontWeight: FontWeight.bold,
