@@ -15,6 +15,8 @@ enum RadioStatus { idle, loading, ready, completed, error }
 class RadioService extends BaseAudioHandler {
   // Variáveis globais
   final AudioPlayer player;
+  // Flag para saber se o player estava tocando
+  bool wasPlaying = false;
 
   // Construtor
   RadioService({required this.player}) {
@@ -22,21 +24,40 @@ class RadioService extends BaseAudioHandler {
     player.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
     // Status interno para UI
-    player.processingStateStream.listen(
+    player.playerStateStream.listen(
       (state) {
-        switch (state) {
+        final processingState = state.processingState;
+        final isPlaying = state.playing;
+
+        debugPrint("PROCESSING STATE: $processingState");
+        debugPrint("IS PLAYING: $isPlaying");
+
+        if (isPlaying) {
+          wasPlaying = true;
+        }
+
+        switch (processingState) {
           case ProcessingState.loading:
           case ProcessingState.buffering:
             _statusController.add(RadioStatus.loading);
             break;
           case ProcessingState.ready:
-            _statusController.add(RadioStatus.ready);
+            if (wasPlaying) {
+              _statusController.add(RadioStatus.ready);
+            } else {
+              _statusController.add(RadioStatus.idle);
+            }
             break;
           case ProcessingState.completed:
-            _statusController.add(RadioStatus.completed);
-            break;
           case ProcessingState.idle:
-            _statusController.add(RadioStatus.idle);
+            if (wasPlaying) {
+              debugPrint("PROCESSING STATE NO IF ERROR: $processingState");
+              debugPrint("IS PLAYING NO IF ERROR: $isPlaying");
+              _statusController.add(RadioStatus.error);
+            } else {
+              _statusController.add(RadioStatus.idle);
+            }
+            wasPlaying = false;
             break;
         }
       },
@@ -61,10 +82,10 @@ class RadioService extends BaseAudioHandler {
       },
       androidCompactActionIndices: const [0, 1],
       processingState: {
-        ProcessingState.idle: AudioProcessingState.idle,
         ProcessingState.loading: AudioProcessingState.loading,
         ProcessingState.buffering: AudioProcessingState.buffering,
         ProcessingState.ready: AudioProcessingState.ready,
+        ProcessingState.idle: AudioProcessingState.idle,
         ProcessingState.completed: AudioProcessingState.completed,
       }[player.processingState]!,
       playing: player.playing,
@@ -77,13 +98,13 @@ class RadioService extends BaseAudioHandler {
 
   // Inicia o player e conecta ao servidor de stream
   Future<void> startRadio() async {
-    _statusController.add(RadioStatus.loading);
     try {
       await player.setAudioSource(AudioSource.uri(Uri.parse(kUrlServer)));
       await player.play();
+      wasPlaying = true;
       _statusController.add(RadioStatus.ready);
     } catch (e) {
-      debugPrint("Erro ao iniciar rádio: $e");
+      debugPrint("Erro ao conectar servidor de stream: $e");
       _statusController.add(RadioStatus.error);
     }
   }
@@ -99,6 +120,7 @@ class RadioService extends BaseAudioHandler {
   Future<void> stop() async {
     await player.stop();
     await super.stop();
+    wasPlaying = false;
   }
 
   // Controla o botão de play/stop

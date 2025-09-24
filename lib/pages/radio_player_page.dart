@@ -101,89 +101,81 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
               final status = snapshot.data ?? RadioStatus.idle;
               final player = radioService.player;
 
-              if (status == RadioStatus.ready) {
-                return StreamBuilder<IcyMetadata?>(
-                  stream: player.icyMetadataStream,
-                  builder: (context, snapshot) {
-                    // variáveis locais
-                    final icy = snapshot.data;
-                    final playing = player.playing;
-                    final rawTitle = icy?.info?.title ?? '';
-                    final parts = rawTitle.split(' - ');
-                    final artist = parts.isNotEmpty
-                        ? parts.first.trim()
-                        : 'Sem informação';
-                    final nameSong = parts.sublist(1).join(' - ').trim();
-                    // Chama função limpaTitulo da classe auxiliar radio_service
-                    final song = parts.length > 1
-                        ? radioService.limparTitulo(nameSong)
-                        : 'Sem informação...';
+              debugPrint("STATUS ATUAL EM PAGE: $status");
+              debugPrint("_DIALOGOPEN ANTES DO IF: $_dialogOpen");
 
-                    if (rawTitle.isNotEmpty && playing) {
-                      // chama função que retorna a capa do álbum da música em
-                      // execução
-                      _updateCover(artist: artist, song: song);
-                    } else {
-                      _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
-                    } // fim if
-                    // Retorna o Widget customizado que exibe a capa, o nome
-                    // do artista, o nome da música e o botão player/stop
-                    return BackgroundContainer(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 80),
-                        child: ViewData(
-                          radioService: radioService,
-                          coverUrl: _coverUrl,
-                          artist: artist,
-                          song: song,
+              switch (status) {
+                case RadioStatus.ready:
+                  return StreamBuilder<IcyMetadata?>(
+                    stream: player.icyMetadataStream,
+                    builder: (context, snapshot) {
+                      // variáveis locais
+                      final icy = snapshot.data;
+                      final playing = player.playing;
+                      final rawTitle = icy?.info?.title ?? '';
+                      final parts = rawTitle.split(' - ');
+                      final artist = parts.isNotEmpty
+                          ? parts.first.trim()
+                          : 'Sem informação';
+                      final nameSong = parts.sublist(1).join(' - ').trim();
+                      // Chama função limpaTitulo da classe auxiliar radio_service
+                      final song = parts.length > 1
+                          ? radioService.limparTitulo(nameSong)
+                          : 'Sem informação...';
+
+                      if (rawTitle.isNotEmpty && playing) {
+                        // chama função que retorna a capa do álbum da música em
+                        // execução
+                        _updateCover(artist: artist, song: song);
+                      } else {
+                        _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
+                      } // fim if
+                      // Retorna o Widget customizado que exibe a capa, o nome
+                      // do artista, o nome da música e o botão player/stop
+                      return BackgroundContainer(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 80),
+                          child: ViewData(
+                            radioService: radioService,
+                            coverUrl: _coverUrl,
+                            artist: artist,
+                            song: song,
+                          ),
                         ),
-                      ),
-                    );
-                  }, //Builder
-                );
-              } // fim if
-              else if (status == RadioStatus.loading) {
-                return const LoadSpinner(padding: EdgeInsets.only(top: 210));
-              } // fim if
-              else if (status == RadioStatus.error && !_dialogOpen) {
-                _dialogOpen = true;
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (dialogContext) {
-                      return ErroDialogConnection(
-                        onRetry: () {
-                          radioService.startRadio();
-                          _dialogOpen = false;
-                          Navigator.of(dialogContext).pop();
-                        },
                       );
-                    },
-                  ).then((_) => _dialogOpen = false);
-                }); // WidgetsBinding
-              } // fim if
-              else if (status == RadioStatus.completed &&
-                  !_dialogOpen &&
-                  player.playing) {
-                _dialogOpen = true;
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (dialogContext) {
-                      return ErroDialogConnection(
-                        onRetry: () {
-                          radioService.startRadio();
-                          _dialogOpen = false;
-                          Navigator.of(dialogContext).pop();
+                    }, //Builder
+                  );
+                case RadioStatus.loading:
+                  return const LoadSpinner(padding: EdgeInsets.only(top: 210));
+
+                case RadioStatus.error:
+                  if (!_dialogOpen) {
+                    _dialogOpen = true;
+                    debugPrint("STATUS NO IF DO CASE ERROR: $status");
+                    debugPrint("_DIALOGOPEN NO IF DO CASE ERROR: $_dialogOpen");
+
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (dialogContext) {
+                          return ErroDialogConnection(
+                            onRetry: () {
+                              radioService.startRadio();
+                              _dialogOpen = false;
+                              Navigator.of(dialogContext).pop();
+                            },
+                          );
                         },
-                      );
-                    },
-                  ).then((_) => _dialogOpen = false);
-                }); // WidgetsBinding
+                      ).then((_) => _dialogOpen = false);
+                    }); // WidgetsBinding
+                  } // fim switch
+                // deixa o spinner ativo por trás do dialog de erro
+                // return const LoadSpinner(padding: EdgeInsets.only(top: 210));
+                case RadioStatus.idle:
+                case RadioStatus.completed:
+                  return const LoadSpinner(padding: EdgeInsets.only(top: 210));
               }
-              // deixa o spinner ativo por trás do dialog de erro
               return const LoadSpinner(padding: EdgeInsets.only(top: 210));
             }, // Builder
           ),
