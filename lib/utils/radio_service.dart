@@ -5,6 +5,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
+import 'package:webradio_parque_verde/main.dart';
 
 // Imports locais
 import '../constants.dart';
@@ -17,6 +18,10 @@ class RadioService extends BaseAudioHandler {
   final AudioPlayer player;
   // Flag para saber se o player estava tocando
   bool wasPlaying = false;
+  bool hasError = false;
+  final _statusController = StreamController<RadioStatus>.broadcast();
+
+  Stream<RadioStatus> get statusStream => _statusController.stream;
 
   // Construtor
   RadioService({required this.player}) {
@@ -29,11 +34,11 @@ class RadioService extends BaseAudioHandler {
         final processingState = state.processingState;
         final isPlaying = state.playing;
 
-        debugPrint("PROCESSING STATE: $processingState");
-        debugPrint("IS PLAYING: $isPlaying");
-
         if (isPlaying) {
           wasPlaying = true;
+        }
+        if (hasError) {
+          return;
         }
 
         switch (processingState) {
@@ -50,10 +55,11 @@ class RadioService extends BaseAudioHandler {
             break;
           case ProcessingState.completed:
           case ProcessingState.idle:
+            radioService.play();
+
             if (wasPlaying) {
-              debugPrint("PROCESSING STATE NO IF ERROR: $processingState");
-              debugPrint("IS PLAYING NO IF ERROR: $isPlaying");
               _statusController.add(RadioStatus.error);
+              hasError = true;
             } else {
               _statusController.add(RadioStatus.idle);
             }
@@ -61,16 +67,13 @@ class RadioService extends BaseAudioHandler {
             break;
         }
       },
-      onError: (_) {
+      onError: (e, st) {
+        hasError = true;
         _statusController.add(RadioStatus.error);
+        debugPrint('RADIO SERVICE - playerStateStream.onError: $e');
       },
     );
   }
-
-  // StreamController para status interno
-  final _statusController = StreamController<RadioStatus>.broadcast();
-  Stream<RadioStatus> get statusStream => _statusController.stream;
-
   // Converte eventos do just_audio para AudioService PlaybackState
   PlaybackState _transformEvent(PlaybackEvent event) {
     return PlaybackState(
@@ -98,13 +101,18 @@ class RadioService extends BaseAudioHandler {
 
   // Inicia o player e conecta ao servidor de stream
   Future<void> startRadio() async {
+    hasError = false;
+
     try {
+      _statusController.add(RadioStatus.loading);
       await player.setAudioSource(AudioSource.uri(Uri.parse(kUrlServer)));
       await player.play();
       wasPlaying = true;
       _statusController.add(RadioStatus.ready);
     } catch (e) {
       debugPrint("Erro ao conectar servidor de stream: $e");
+      hasError = true;
+      wasPlaying = false;
       _statusController.add(RadioStatus.error);
     }
   }
