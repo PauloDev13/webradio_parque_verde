@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+// imports locais
 import '../components/button_social_media.dart';
 import '../components/cover_image.dart';
 import '../components/wave_form_json.dart';
@@ -41,7 +42,7 @@ class ViewData extends StatelessWidget {
               alignment: Alignment.center,
               children: <Widget>[
                 Align(
-                  // waveform fica posicionado verticamente em 35% do SizeBox
+                  // waveform fica posicionado verticalmente em 35% do SizeBox
                   alignment: const FractionalOffset(0.5, 0.35),
                   child: StreamBuilder(
                     stream: player.playingStream,
@@ -55,7 +56,7 @@ class ViewData extends StatelessWidget {
                 ),
 
                 Align(
-                  // a capa fica posicionado verticamente em 32% do SizeBox
+                  // a capa fica posicionado verticalmente em 32% do SizeBox
                   alignment: const FractionalOffset(0.5, 0.32),
                   // Carrega o widget customizado Cover que exibe a capa do
                   // álbum do artista que está em execução
@@ -63,14 +64,15 @@ class ViewData extends StatelessWidget {
                 ),
 
                 Align(
-                  // os títulos fica posicionado verticamente em 90% do SizeBox
-                  alignment: const FractionalOffset(0.5, 0.9),
+                  // os títulos fica posicionado verticalmente em 90% do SizeBox
+                  alignment: const FractionalOffset(0.5, 0.95),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       // títulos do artista e música em execução
                       TextInfo(metadata: artist, textStyle: kArtistTextStyle),
-                      TextInfo(metadata: song, textStyle: kASongTextStyle),
+                      SizedBox(height: 5),
+                      TextInfo(metadata: song, textStyle: kSongTextStyle),
 
                       SizedBox(height: 20),
                       // Carrega o widget customizado PlayPauseButton que controla o
@@ -78,7 +80,7 @@ class ViewData extends StatelessWidget {
                       PlayPauseButton(
                         playingStream: player.playingStream,
                         backgroundColor: kColor3,
-                        borderColor: kColorBorderButton.withValues(alpha: 0.8),
+                        borderColor: kColor2.withValues(alpha: 0.8),
                         iconColor: kColor2,
                         initialPlaying: player.playing,
                         onPressed: radioService.togglePlayPause,
@@ -107,7 +109,7 @@ class ViewData extends StatelessWidget {
                     iconColor: kColor2,
                     label: 'Whatsapp',
                     labelColor: kColor2,
-                    borderColor: kColorBorderButton.withValues(alpha: 0.6),
+                    borderColor: kColor2.withValues(alpha: 0.6),
                   ),
                   ButtonSocialMedia(
                     onPressed: () {
@@ -118,7 +120,7 @@ class ViewData extends StatelessWidget {
                     iconColor: kColor2,
                     label: 'Instagram',
                     labelColor: kColor2,
-                    borderColor: kColorBorderButton.withValues(alpha: 0.8),
+                    borderColor: kColor2.withValues(alpha: 0.8),
                   ),
                 ],
               ),

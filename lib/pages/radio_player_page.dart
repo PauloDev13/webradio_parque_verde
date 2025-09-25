@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:webradio_parque_verde/components/erro_dialog_connection.dart';
 
+// Imports locais
+import '../components/animated_dialog_error.dart';
 import '../components/background_container.dart';
 import '../components/load_spinner.dart';
 import '../components/view_data.dart';
 import '../constants.dart';
-// Imports locais
 import '../main.dart';
 import '../utils/radio_service.dart';
 
@@ -101,31 +101,36 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
               final status = snapshot.data ?? RadioStatus.idle;
               final player = radioService.player;
 
+              // se o player está com status ready, exibe a capa do álgum,
+              //  o artista e o nome da música
               if (status == RadioStatus.ready) {
                 return StreamBuilder<IcyMetadata?>(
                   stream: player.icyMetadataStream,
                   builder: (context, snapshot) {
-                    // variáveis locais
+                    // variáveis locais do StreamBuilder
                     final icy = snapshot.data;
-                    final playing = player.playing;
                     final rawTitle = icy?.info?.title ?? '';
                     final parts = rawTitle.split(' - ');
                     final artist = parts.isNotEmpty
                         ? parts.first.trim()
                         : 'Sem informação';
                     final nameSong = parts.sublist(1).join(' - ').trim();
-                    // Chama função limpaTitulo da classe auxiliar radio_service
+
+                    // a função limpaTitulo tira caracteres indesejáveis no
+                    // final da strig com o nome da música
                     final song = parts.length > 1
                         ? radioService.limparTitulo(nameSong)
                         : 'Sem informação...';
 
-                    if (rawTitle.isNotEmpty && playing) {
-                      // chama função que retorna a capa do álbum da música em
-                      // execução
+                    // se o título da música não for vazio
+                    if (rawTitle.isNotEmpty) {
+                      // a função _updateCover atualiza e exibe os nomes do
+                      // artista e da música em execução
                       _updateCover(artist: artist, song: song);
                     } else {
                       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
                     } // fim if
+
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
@@ -143,33 +148,34 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                 );
               } // fim if
 
+              // se o status for loading, exibe um spinner
               if (status == RadioStatus.loading) {
                 return const LoadSpinner(padding: EdgeInsets.only(top: 210));
               }
 
+              // se o status for error, exibe um AlertDialog
               if (status == RadioStatus.error) {
                 if (!_dialogOpen) {
                   _dialogOpen = true;
-
+                  // espera a tela ser construída para chamar o dialog
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    showDialog(
+                    showAnimatedDialog(
                       context: context,
-                      barrierDismissible: false,
-                      builder: (dialogContext) {
-                        return ErroDialogConnection(
-                          onRetry: () {
-                            radioService.startRadio();
-                            _dialogOpen = false;
-                            Navigator.of(dialogContext).pop();
-                          },
-                        );
+                      dialogOpen: _dialogOpen,
+                      onRetry: () {
+                        radioService.startRadio();
+                        _dialogOpen = false;
+                        Navigator.of(context).pop();
                       },
-                    ).then((_) => _dialogOpen = false);
+                    ); // showAnimatedDialog
                   }); // WidgetsBinding
+
                   // deixa o spinner ativo por trás do dialog de erro
                   return const LoadSpinner(padding: EdgeInsets.only(top: 210));
                 } // fim if
               }
+
+              // exibe um spinner para qualquer outros status do player
               return const LoadSpinner(padding: EdgeInsets.only(top: 210));
             }, // Builder
           ),

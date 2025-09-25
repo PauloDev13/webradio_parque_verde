@@ -2,8 +2,8 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:webradio_parque_verde/constants.dart';
 
+import '../constants.dart';
 // imports locais
 import '../pages/radio_player_page.dart';
 

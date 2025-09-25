@@ -15,6 +15,6 @@ class WaveFormJson extends StatelessWidget {
             height: 240,
             alignment: Alignment.topCenter,
           )
-        : const SizedBox();
+        : const SizedBox.shrink();
   }
 }

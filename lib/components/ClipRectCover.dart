@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:webradio_parque_verde/constants.dart';
+
+// imports locais
+import '../constants.dart';
 
 class ClipRectCover extends StatelessWidget {
   const ClipRectCover({

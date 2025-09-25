@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:webradio_parque_verde/components/ClipRectCover.dart';
-import 'package:webradio_parque_verde/constants.dart';
+
+// imports locais
+import '../components/ClipRectCover.dart';
+import '../constants.dart';
 
 class Cover extends StatelessWidget {
   const Cover({super.key, required String? coverUrl, required String artist})
@@ -20,7 +22,7 @@ class Cover extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: kColorBorderCover.withValues(alpha: 0.8), // cor da borda
+          color: kColor2.withValues(alpha: 0.8), // cor da borda
           width: 3,
         ),
         borderRadius: BorderRadius.circular(20),

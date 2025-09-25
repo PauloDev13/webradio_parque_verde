@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 
-// Cores se transparência
+// Cores usadas na identidade visual
 const kColor1 = Color(0xFF05aaea);
 const kColor2 = Color(0xFF03ebff);
 const kColor3 = Color(0xFF000b11);
 
-// Cores com transparência
-const kColorBorderCover = Color(0xFF03ebff);
-const kColorBorderButton = Color(0xFF03ebff);
-
-// const kUrlServer = 'https://usa13.fastcast4u.com';
+// urls
 const kUrlServer = 'https://usa13.fastcast4u.com/proxy/parqueverde?mp=/1';
 const kUrlCover = 'https://usa13.fastcast4u.com/rpc/parqueverde/streaminfo.get';
 const kUrlFallback = 'assets/logo_retangular.jpg';
 
+// estilo de texto para o nome do artista
 const kArtistTextStyle = TextStyle(
   fontSize: 16,
   color: kColor2,
@@ -21,16 +18,18 @@ const kArtistTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-const kASongTextStyle = TextStyle(
+// estilo de texto para o nome da música
+const kSongTextStyle = TextStyle(
   fontSize: 12,
   color: Colors.white,
   fontFamily: 'Michroma',
   fontStyle: FontStyle.italic,
 );
 
-const kErroConexaoStyle = TextStyle(
-  fontSize: 16,
+// estilo de texto para o conteúdo do Dialog
+const kDialogContentStyle = TextStyle(
+  fontSize: 12,
   fontFamily: 'Michroma',
-  color: Colors.redAccent,
+  color: kColor2,
   fontWeight: FontWeight.bold,
 );

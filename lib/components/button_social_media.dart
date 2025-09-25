@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:webradio_parque_verde/constants.dart';
+
+// imports locais
+import '../constants.dart';
 
 class ButtonSocialMedia extends StatelessWidget {
   final VoidCallback onPressed;
@@ -25,7 +26,7 @@ class ButtonSocialMedia extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       onPressed: onPressed,
-      icon: FaIcon(icon, color: iconColor, size: iconSize),
+      icon: Icon(icon, color: iconColor),
       label: Text(
         label,
         style: TextStyle(
@@ -36,7 +37,7 @@ class ButtonSocialMedia extends StatelessWidget {
         ),
       ),
       style: OutlinedButton.styleFrom(
-        backgroundColor: kColor3,
+        backgroundColor: kColor3.withValues(alpha: 0.8),
         side: BorderSide(color: borderColor, width: 2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),

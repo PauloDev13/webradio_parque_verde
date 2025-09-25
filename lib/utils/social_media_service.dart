@@ -18,7 +18,7 @@ class SocialMediaService {
     } else if (await canLaunchUrl(fallbackUrl)) {
       await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
     } else {
-      throw 'Não foi abrir o whatsapp';
+      throw 'Erro ao abrir o Whatsapp';
     }
   }
 

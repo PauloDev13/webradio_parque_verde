@@ -5,10 +5,10 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'package:webradio_parque_verde/main.dart';
 
 // Imports locais
 import '../constants.dart';
+import '../main.dart';
 
 // Enum
 enum RadioStatus { idle, loading, ready, completed, error }

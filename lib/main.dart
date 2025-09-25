@@ -2,8 +2,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-import 'components/splash_screen_widget.dart';
-// import '../pages/radio_player_page.dart';
+// imports locais
+import '../components/splash_screen_widget.dart';
 import 'utils/radio_service.dart';
 
 late final RadioService radioService;
@@ -33,7 +33,6 @@ class WebradioApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AnimatedSplashScreenWidget(),
-      // home: RadioPlayerPage(),
     );
   }
 }
