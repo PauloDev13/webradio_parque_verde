@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../components/button_social_media.dart';
 import '../constants.dart';
 
-// classe que cria e exobe o AlertDialog de erro de conexão
+// classe que cria e exibe o AlertDialog de erro de conexão
 void showAnimatedDialog({
   VoidCallback? onCancel,
   required BuildContext context,

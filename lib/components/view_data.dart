@@ -31,68 +31,56 @@ class ViewData extends StatelessWidget {
     final player = radioService.player;
 
     return Padding(
-      padding: const EdgeInsets.only(right: 20, left: 20),
+      padding: const EdgeInsets.only(right: 20, left: 20, top: 20),
       child: Column(
         children: <Widget>[
-          SizedBox(
-            width: double.infinity,
-            // altura do SizeBox de 45% da tela
-            height: MediaQuery.of(context).size.height * 0.45,
-            child: Stack(
-              alignment: Alignment.center,
+          TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
+          Stack(
+            fit: StackFit.passthrough,
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+                child: Image.asset(
+                  kHeadphonesImg,
+                  height: 250,
+                  width: 410,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+
+              Positioned(top: 70, child: WaveFormJson(playing: player.playing)),
+
+              Positioned(
+                top: 90,
+                child: Cover(coverUrl: _coverUrl, artist: artist),
+              ),
+            ],
+          ),
+
+          Align(
+            child: Column(
+              // mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Align(
-                  // waveform fica posicionado verticalmente em 35% do SizeBox
-                  alignment: const FractionalOffset(0.5, 0.35),
-                  child: StreamBuilder(
-                    stream: player.playingStream,
-                    initialData: player.playing,
-                    builder: (context, snapshot) {
-                      final playing = snapshot.data ?? false;
-                      // exibe animação de WaveForm de aúdio
-                      return WaveFormJson(playing: playing);
-                    }, // builder
-                  ),
-                ),
+                // títulos do artista e música em execução
+                TextInfo(metadata: artist, textStyle: kArtistTextStyle),
+                SizedBox(height: 5),
+                TextInfo(metadata: song, textStyle: kSongTextStyle),
 
-                Align(
-                  // a capa fica posicionado verticalmente em 32% do SizeBox
-                  alignment: const FractionalOffset(0.5, 0.32),
-                  // Carrega o widget customizado Cover que exibe a capa do
-                  // álbum do artista que está em execução
-                  child: Cover(coverUrl: _coverUrl, artist: artist),
-                ),
-
-                Align(
-                  // os títulos fica posicionado verticalmente em 90% do SizeBox
-                  alignment: const FractionalOffset(0.5, 0.95),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      // títulos do artista e música em execução
-                      TextInfo(metadata: artist, textStyle: kArtistTextStyle),
-                      SizedBox(height: 5),
-                      TextInfo(metadata: song, textStyle: kSongTextStyle),
-
-                      SizedBox(height: 20),
-                      // Carrega o widget customizado PlayPauseButton que controla o
-                      // play/stop do player
-                      PlayPauseButton(
-                        playingStream: player.playingStream,
-                        backgroundColor: kColor3,
-                        borderColor: kColor2.withValues(alpha: 0.8),
-                        iconColor: kColor2,
-                        initialPlaying: player.playing,
-                        onPressed: radioService.togglePlayPause,
-                      ),
-                    ],
-                  ),
+                SizedBox(height: 20),
+                // Carrega o widget customizado PlayPauseButton que controla o
+                // play/stop do player
+                PlayPauseButton(
+                  playingStream: player.playingStream,
+                  backgroundColor: kColor3,
+                  borderColor: kColor2.withValues(alpha: 0.6),
+                  iconColor: kColor2,
+                  initialPlaying: player.playing,
+                  onPressed: radioService.togglePlayPause,
                 ),
               ],
             ),
           ),
 
-          // Botões do Instagram e Whatsapp
           Expanded(
             child: Container(
               alignment: Alignment.bottomCenter,
@@ -120,7 +108,7 @@ class ViewData extends StatelessWidget {
                     iconColor: kColor2,
                     label: 'Instagram',
                     labelColor: kColor2,
-                    borderColor: kColor2.withValues(alpha: 0.8),
+                    borderColor: kColor2.withValues(alpha: 0.6),
                   ),
                 ],
               ),

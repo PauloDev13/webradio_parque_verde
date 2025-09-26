@@ -90,7 +90,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/background.jpg'),
+              image: AssetImage(kBackgroundImg),
               fit: BoxFit.cover,
               alignment: Alignment.topCenter,
             ),
@@ -134,14 +134,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     // Retorna o Widget customizado que exibe a capa, o nome
                     // do artista, o nome da música e o botão player/stop
                     return BackgroundContainer(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 80),
-                        child: ViewData(
-                          radioService: radioService,
-                          coverUrl: _coverUrl,
-                          artist: artist,
-                          song: song,
-                        ),
+                      child: ViewData(
+                        radioService: radioService,
+                        coverUrl: _coverUrl,
+                        artist: artist,
+                        song: song,
                       ),
                     );
                   }, //Builder

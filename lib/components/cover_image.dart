@@ -22,13 +22,13 @@ class Cover extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: kColor2.withValues(alpha: 0.8), // cor da borda
+          color: kColor2.withValues(alpha: 0.7), // cor da borda
           width: 3,
         ),
         borderRadius: BorderRadius.circular(20),
       ),
       child: _artist.isNotEmpty && _artist.startsWith('Paulo') && !urlCover
-          ? ClipRectCover(coverUrl: 'assets/locucao.png', urlCover: urlCover)
+          ? ClipRectCover(coverUrl: kLocucaoImg, urlCover: urlCover)
           : ClipRectCover(coverUrl: _coverUrl, urlCover: urlCover),
     );
   }

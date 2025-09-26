@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../constants.dart';
 // imports locais
+import '../constants.dart';
 import '../pages/radio_player_page.dart';
 
 class AnimatedSplashScreenWidget extends StatelessWidget {
@@ -19,7 +19,7 @@ class AnimatedSplashScreenWidget extends StatelessWidget {
         width: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/animation/animated_background.png'),
+            image: AssetImage(kBackgroundImg),
             fit: BoxFit.cover,
           ),
         ),
@@ -30,7 +30,7 @@ class AnimatedSplashScreenWidget extends StatelessWidget {
               height: screenHeight / 3,
               child: Center(
                 child: Lottie.asset(
-                  'assets/animation/Walk_Cycle.json',
+                  kWalkCycleJson,
                   height: 200,
                   fit: BoxFit.contain,
                 ), // Lottie

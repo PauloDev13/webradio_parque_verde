@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:webradio_parque_verde/constants.dart';
 
 class WaveFormJson extends StatelessWidget {
   final bool playing;
@@ -10,9 +11,8 @@ class WaveFormJson extends StatelessWidget {
     // se o player está em execução, exibe waveform, senão, exibe size box vazio
     return playing
         ? Lottie.asset(
-            'assets/animation/Sound voice waves.json',
-            // width: 250,
-            height: 240,
+            kWaveFormJson,
+            height: 210,
             alignment: Alignment.topCenter,
           )
         : const SizedBox.shrink();

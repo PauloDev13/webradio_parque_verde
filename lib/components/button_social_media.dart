@@ -33,7 +33,7 @@ class ButtonSocialMedia extends StatelessWidget {
           color: labelColor,
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Michroma',
+          fontFamily: kMichromaFont,
         ),
       ),
       style: OutlinedButton.styleFrom(

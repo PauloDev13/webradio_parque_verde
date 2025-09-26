@@ -10,11 +10,25 @@ const kUrlServer = 'https://usa13.fastcast4u.com/proxy/parqueverde?mp=/1';
 const kUrlCover = 'https://usa13.fastcast4u.com/rpc/parqueverde/streaminfo.get';
 const kUrlFallback = 'assets/logo_retangular.jpg';
 
+// Imagens
+const kBackgroundImg = 'assets/animation/animated_background.png';
+const kHeadphonesImg = 'assets/headphones.png';
+const kBrandingImg = 'assets/brandingimage.png';
+const kLocucaoImg = 'assets/locucao.png';
+const kLogRetagularImg = 'assets/logo_retangular.jpg';
+
+// Animações .json
+const kWaveFormJson = 'assets/animation/Sound voice waves.json';
+const kWalkCycleJson = 'assets/animation/Walk_Cycle.json';
+
+// Fontes
+const kMichromaFont = 'Michroma';
+
 // estilo de texto para o nome do artista
 const kArtistTextStyle = TextStyle(
   fontSize: 16,
   color: kColor2,
-  fontFamily: 'Michroma',
+  fontFamily: kMichromaFont,
   fontWeight: FontWeight.bold,
 );
 
@@ -22,14 +36,21 @@ const kArtistTextStyle = TextStyle(
 const kSongTextStyle = TextStyle(
   fontSize: 12,
   color: Colors.white,
-  fontFamily: 'Michroma',
+  fontFamily: kMichromaFont,
   fontStyle: FontStyle.italic,
 );
 
 // estilo de texto para o conteúdo do Dialog
 const kDialogContentStyle = TextStyle(
   fontSize: 12,
-  fontFamily: 'Michroma',
+  fontFamily: kMichromaFont,
   color: kColor2,
   fontWeight: FontWeight.bold,
+);
+
+// estilo de texto para o conteúdo do Dialog
+const kTitleStyle = TextStyle(
+  fontSize: 21,
+  fontFamily: kMichromaFont,
+  color: kColor2,
 );
