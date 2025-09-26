@@ -22,10 +22,10 @@ class Cover extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: kColor2.withValues(alpha: 0.7), // cor da borda
-          width: 3,
+          color: kColor4.withValues(alpha: 0.5), // cor da borda
+          width: 15,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(100),
       ),
       child: _artist.isNotEmpty && _artist.startsWith('Paulo') && !urlCover
           ? ClipRectCover(coverUrl: kLocucaoImg, urlCover: urlCover)

@@ -105,7 +105,7 @@ class RadioService extends BaseAudioHandler {
 
     try {
       _statusController.add(RadioStatus.loading);
-      await player.setAudioSource(AudioSource.uri(Uri.parse(kUrlServer)));
+      await player.setAudioSource(AudioSource.uri(Uri.parse(kUrlServerLink)));
       await player.play();
       wasPlaying = true;
       _statusController.add(RadioStatus.ready);

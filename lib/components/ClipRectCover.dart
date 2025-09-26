@@ -16,12 +16,12 @@ class ClipRectCover extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(100),
       child: urlCover
           ? Image.network(
               _coverUrl!,
-              height: 130,
-              width: 130,
+              height: 140,
+              width: 140,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Image.asset(
                 kUrlFallback,

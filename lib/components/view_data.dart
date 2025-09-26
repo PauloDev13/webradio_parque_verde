@@ -48,10 +48,12 @@ class ViewData extends StatelessWidget {
                 ),
               ),
 
+              // exibe waveform
               Positioned(top: 70, child: WaveFormJson(playing: player.playing)),
 
+              // exibe capa do álgum do cantor queest
               Positioned(
-                top: 90,
+                top: 75,
                 child: Cover(coverUrl: _coverUrl, artist: artist),
               ),
             ],
