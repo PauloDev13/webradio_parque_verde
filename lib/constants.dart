@@ -8,8 +8,9 @@ const kColor4 = Color(0xFFFFFFFF);
 
 // urls
 const kUrlServerLink = 'https://stm6.xradios.com.br:6886/stream';
+const kUrlServerCentova = 'https://centova2.ipstm.net:20004';
 const kUrlServer = 'https://usa13.fastcast4u.com/proxy/parqueverde?mp=/1';
-const kUrlCover = 'https://usa13.fastcast4u.com/rpc/parqueverde/streaminfo.get';
+const kUrlCover = 'https://centova2.ipstm.net/rpc/bmjceqts/streaminfo.get';
 const kUrlFallback = 'assets/logo_retangular.jpg';
 
 // Imagens

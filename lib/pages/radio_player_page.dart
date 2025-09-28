@@ -119,7 +119,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     // a função limpaTitulo tira caracteres indesejáveis no
                     // final da strig com o nome da música
                     final song = parts.length > 1
-                        ? radioService.limparTitulo(nameSong)
+                        ? nameSong
                         : 'Sem informação...';
 
                     // se o título da música não for vazio

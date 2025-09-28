@@ -105,7 +105,9 @@ class RadioService extends BaseAudioHandler {
 
     try {
       _statusController.add(RadioStatus.loading);
-      await player.setAudioSource(AudioSource.uri(Uri.parse(kUrlServerLink)));
+      await player.setAudioSource(
+        AudioSource.uri(Uri.parse(kUrlServerCentova)),
+      );
       await player.play();
       wasPlaying = true;
       _statusController.add(RadioStatus.ready);
@@ -169,7 +171,7 @@ class RadioService extends BaseAudioHandler {
   Future<String> fetchCoverItunes(String artist, String music) async {
     try {
       final query = Uri.encodeComponent('$artist $music');
-      const country = "US";
+      const country = "BR";
       final url = Uri.parse(
         'https://itunes.apple.com/search'
         '?term=$query'
