@@ -15,13 +15,13 @@ class ViewData extends StatelessWidget {
   const ViewData({
     super.key,
     required this.radioService,
-    required String? coverUrl,
+    required String coverUrl,
     required this.artist,
     required this.song,
   }) : _coverUrl = coverUrl;
 
   final RadioService radioService;
-  final String? _coverUrl;
+  final String _coverUrl;
   final String artist;
   final String song;
 
@@ -51,17 +51,13 @@ class ViewData extends StatelessWidget {
               // exibe waveform
               Positioned(top: 70, child: WaveFormJson(playing: player.playing)),
 
-              // exibe capa do álgum do cantor queest
-              Positioned(
-                top: 75,
-                child: Cover(coverUrl: _coverUrl, artist: artist),
-              ),
+              // exibe capa do álgum do cantor
+              Positioned(top: 75, child: Cover(coverUrl: _coverUrl)),
             ],
           ),
 
           Align(
             child: Column(
-              // mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 // títulos do artista e música em execução
                 TextInfo(metadata: artist, textStyle: kArtistTextStyle),

@@ -4,22 +4,18 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class ClipRectCover extends StatelessWidget {
-  const ClipRectCover({
-    super.key,
-    required String? coverUrl,
-    required this.urlCover,
-  }) : _coverUrl = coverUrl;
+  const ClipRectCover({super.key, required String coverUrl})
+    : _coverUrl = coverUrl;
 
-  final String? _coverUrl;
-  final bool urlCover;
+  final String _coverUrl;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(100),
-      child: urlCover
+      child: _coverUrl.startsWith('http')
           ? Image.network(
-              _coverUrl!,
+              _coverUrl,
               height: 140,
               width: 140,
               fit: BoxFit.cover,
@@ -31,7 +27,7 @@ class ClipRectCover extends StatelessWidget {
               ),
             )
           : Image.asset(
-              _coverUrl ?? '',
+              _coverUrl,
               height: 140,
               width: 140,
               fit: BoxFit.cover,

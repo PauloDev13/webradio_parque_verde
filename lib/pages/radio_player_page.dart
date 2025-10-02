@@ -22,7 +22,7 @@ class RadioPlayerPage extends StatefulWidget {
 class _RadioPlayerPageState extends State<RadioPlayerPage>
     with WidgetsBindingObserver {
   // variáveis locais
-  String? _coverUrl;
+  String _coverUrl = kUrlFallback;
   String? _lastSong;
   bool _dialogOpen = false;
 
@@ -59,7 +59,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
   }) async {
     if (_lastSong != song) {
       // final newCover = await radioService.fetchCover();
-      final newCover = await radioService.fetchCoverItunes(artist, song);
+      var newCover = await radioService.fetchCoverItunes(artist, song);
+
+      // se o nome do artista começa com "Paulo", exibe a foto do locutor
+      // se não, exibe a capa do álbum
+      artist.startsWith('Paulo') ? newCover = kLocucaoImg : newCover;
 
       setState(() {
         _coverUrl = newCover;
