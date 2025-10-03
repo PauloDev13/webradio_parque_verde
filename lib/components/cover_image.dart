@@ -11,7 +11,10 @@ class Cover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Container(
+      height: size.height * 0.225,
+      width: size.width * 0.48,
       decoration: BoxDecoration(
         border: Border.all(
           color: kColor4.withValues(alpha: 0.5), // cor da borda

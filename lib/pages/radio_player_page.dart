@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:webradio_parque_verde/components/view_data_2.dart';
 
 // Imports locais
 import '../components/animated_dialog_error.dart';
-import '../components/background_container.dart';
 import '../components/load_spinner.dart';
-import '../components/view_data.dart';
 import '../constants.dart';
 import '../main.dart';
 import '../utils/radio_service.dart';
@@ -74,6 +73,8 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Color(0xFF001a2c),
       appBar: AppBar(
@@ -91,7 +92,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
       ),
       body: Center(
         child: Container(
-          width: double.infinity,
+          padding: EdgeInsets.only(
+            right: size.width * .05,
+            left: size.width * .05,
+          ),
+          width: size.width,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage(kBackgroundImg),
@@ -135,15 +140,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
                     } // fim if
 
-                    // Retorna o Widget customizado que exibe a capa, o nome
-                    // do artista, o nome da música e o botão player/stop
-                    return BackgroundContainer(
-                      child: ViewData(
-                        radioService: radioService,
-                        coverUrl: _coverUrl,
-                        artist: artist,
-                        song: song,
-                      ),
+                    return ViewData2(
+                      radioService: radioService,
+                      coverUrl: _coverUrl,
+                      artist: artist,
+                      song: song,
                     );
                   }, //Builder
                 );
