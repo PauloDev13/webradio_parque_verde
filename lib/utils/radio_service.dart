@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 
 // Imports locais
-import '../constants.dart';
-import '../main.dart';
+import '/constants.dart';
+import '/main.dart';
 
 // Enum
 enum RadioStatus { idle, loading, ready, completed, error }

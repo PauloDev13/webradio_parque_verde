@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:webradio_parque_verde/components/view_data_2.dart';
+import 'package:webradio_parque_verde/components/custom_app_bar.dart';
 
+import '/components/animated_dialog_error.dart';
+import '/components/view_data.dart';
 // Imports locais
-import '../components/animated_dialog_error.dart';
-import '../components/load_spinner.dart';
-import '../constants.dart';
-import '../main.dart';
-import '../utils/radio_service.dart';
+import '/constants.dart';
+import '/main.dart';
+import '/utils/radio_service.dart';
 
 class RadioPlayerPage extends StatefulWidget {
   const RadioPlayerPage({super.key});
@@ -22,6 +22,8 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     with WidgetsBindingObserver {
   // variáveis locais
   String _coverUrl = kUrlFallback;
+  String _artist = '';
+  String _song = '';
   String? _lastSong;
   bool _dialogOpen = false;
 
@@ -59,12 +61,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     if (_lastSong != song) {
       // final newCover = await radioService.fetchCover();
       var newCover = await radioService.fetchCoverItunes(artist, song);
-
       // se o nome do artista começa com "Paulo", exibe a foto do locutor
       // se não, exibe a capa do álbum
-      artist.startsWith('Paulo') ? newCover = kLocucaoImg : newCover;
-
       setState(() {
+        artist.startsWith('Paulo') ? newCover = kLocucaoImg : newCover;
+        artist.startsWith('Web') ? newCover = kUrlFallback : newCover;
         _coverUrl = newCover;
         _lastSong = song;
       });
@@ -77,22 +78,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
 
     return Scaffold(
       backgroundColor: Color(0xFF001a2c),
-      appBar: AppBar(
-        title: const Text(
-          'Web Rádio',
-          style: TextStyle(
-            fontSize: 21,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Michroma',
-            color: kColor3,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: kColor2,
-      ),
+      appBar: CustomAppBar(title: 'Web Rádio'),
       body: Center(
         child: Container(
           padding: EdgeInsets.only(
+            top: size.width * .03,
             right: size.width * .05,
             left: size.width * .05,
           ),
@@ -120,31 +110,30 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     final icy = snapshot.data;
                     final rawTitle = icy?.info?.title ?? '';
                     final parts = rawTitle.split(' - ');
-                    final artist = parts.isNotEmpty
+                    _artist = parts.isNotEmpty
                         ? parts.first.trim()
                         : 'Sem informação';
                     final nameSong = parts.sublist(1).join(' - ').trim();
 
                     // a função limpaTitulo tira caracteres indesejáveis no
                     // final da strig com o nome da música
-                    final song = parts.length > 1
-                        ? nameSong
-                        : 'Sem informação...';
+                    _song = parts.length > 1 ? nameSong : 'Sem informação';
 
                     // se o título da música não for vazio
                     if (rawTitle.isNotEmpty) {
                       // a função _updateCover atualiza e exibe os nomes do
                       // artista e da música em execução
-                      _updateCover(artist: artist, song: song);
+                      _updateCover(artist: _artist, song: _song);
                     } else {
                       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
                     } // fim if
 
-                    return ViewData2(
+                    return ViewData(
+                      status: true,
                       radioService: radioService,
                       coverUrl: _coverUrl,
-                      artist: artist,
-                      song: song,
+                      artist: _artist,
+                      song: _song,
                     );
                   }, //Builder
                 );
@@ -152,9 +141,14 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
 
               // se o status for loading, exibe um spinner
               if (status == RadioStatus.loading) {
-                return const LoadSpinner(padding: EdgeInsets.only(top: 210));
+                return ViewData(
+                  status: false,
+                  radioService: radioService,
+                  coverUrl: _coverUrl,
+                  artist: _artist,
+                  song: _song,
+                );
               }
-
               // se o status for error, exibe um AlertDialog
               if (status == RadioStatus.error) {
                 if (!_dialogOpen) {
@@ -171,14 +165,22 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                       },
                     ); // showAnimatedDialog
                   }); // WidgetsBinding
-
-                  // deixa o spinner ativo por trás do dialog de erro
-                  return const LoadSpinner(padding: EdgeInsets.only(top: 210));
+                  return ViewData(
+                    status: false,
+                    radioService: radioService,
+                    coverUrl: _coverUrl,
+                    artist: _artist,
+                    song: _song,
+                  );
                 } // fim if
               }
-
-              // exibe um spinner para qualquer outros status do player
-              return const LoadSpinner(padding: EdgeInsets.only(top: 210));
+              return ViewData(
+                status: false,
+                radioService: radioService,
+                coverUrl: _coverUrl,
+                artist: _artist,
+                song: _song,
+              );
             }, // Builder
           ),
         ),

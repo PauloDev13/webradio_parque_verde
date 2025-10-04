@@ -4,8 +4,8 @@ import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 // imports locais
-import '../constants.dart';
-import '../pages/radio_player_page.dart';
+import '/constants.dart';
+import '/pages/radio_player_page.dart';
 
 class AnimatedSplashScreenWidget extends StatelessWidget {
   const AnimatedSplashScreenWidget({super.key});
