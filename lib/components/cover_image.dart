@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// imports locais
-import '../components/clip_rect_cover.dart';
 import '../constants.dart';
 
 class Cover extends StatelessWidget {
@@ -13,7 +11,7 @@ class Cover extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
-      height: size.height * 0.225,
+      height: size.width * 0.48,
       width: size.width * 0.48,
       decoration: BoxDecoration(
         border: Border.all(
@@ -22,7 +20,14 @@ class Cover extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(100),
       ),
-      child: ClipRectCover(coverUrl: _coverUrl),
+      child: CircleAvatar(
+        backgroundImage: _coverUrl.startsWith('http')
+            ? NetworkImage(_coverUrl)
+            : AssetImage(_coverUrl),
+        backgroundColor: Color(0xFF808b92),
+        onBackgroundImageError: (exception, stackTrace) =>
+            AssetImage(kUrlFallback),
+      ),
     );
   }
 }

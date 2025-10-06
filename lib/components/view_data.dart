@@ -95,7 +95,7 @@ class ViewData extends StatelessWidget {
                       ),
                     ),
                     Align(
-                      heightFactor: constraints.minHeight * .001,
+                      heightFactor: constraints.minHeight * .00085,
                       child: Visibility(
                         visible: status,
                         child: Column(

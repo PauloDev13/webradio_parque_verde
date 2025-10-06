@@ -65,7 +65,11 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
       // se não, exibe a capa do álbum
       setState(() {
         artist.startsWith('Paulo') ? newCover = kLocucaoImg : newCover;
-        artist.startsWith('Web') ? newCover = kUrlFallback : newCover;
+        artist.startsWith('Web') ||
+                song.startsWith('Hora') ||
+                song.startsWith('Minuto')
+            ? newCover = kUrlFallback
+            : newCover;
         _coverUrl = newCover;
         _lastSong = song;
       });
@@ -75,7 +79,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Color(0xFF001a2c),
       appBar: CustomAppBar(title: 'Web Rádio'),
@@ -99,7 +102,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
             builder: (context, snapshot) {
               final status = snapshot.data ?? RadioStatus.idle;
               final player = radioService.player;
-
               // se o player está com status ready, exibe a capa do álgum,
               //  o artista e o nome da música
               if (status == RadioStatus.ready) {
@@ -114,7 +116,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                         ? parts.first.trim()
                         : 'Sem informação';
                     final nameSong = parts.sublist(1).join(' - ').trim();
-
                     // a função limpaTitulo tira caracteres indesejáveis no
                     // final da strig com o nome da música
                     _song = parts.length > 1 ? nameSong : 'Sem informação';
@@ -127,7 +128,8 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     } else {
                       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
                     } // fim if
-
+                    // retorna o Widget que exibe os nomes do artista, música e
+                    // a capa do álbum em execução
                     return ViewData(
                       status: true,
                       radioService: radioService,
@@ -138,8 +140,8 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                   }, //Builder
                 );
               } // fim if
-
-              // se o status for loading, exibe um spinner
+              // se o estatus for loading, retorna o Widget que exibe os
+              // nomes do artista, música e a capa do álbum em execução
               if (status == RadioStatus.loading) {
                 return ViewData(
                   status: false,
@@ -165,6 +167,8 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                       },
                     ); // showAnimatedDialog
                   }); // WidgetsBinding
+                  // retorna o Widget que exibe os nomes do artista, música e
+                  // a capa do álbum em execução
                   return ViewData(
                     status: false,
                     radioService: radioService,
@@ -174,6 +178,8 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                   );
                 } // fim if
               }
+              // retorna o Widget que exibe os nomes do artista, música e
+              // a capa do álbum em execução
               return ViewData(
                 status: false,
                 radioService: radioService,
@@ -186,5 +192,5 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
         ),
       ),
     );
-  }
+  } // fim classe Widget
 }
