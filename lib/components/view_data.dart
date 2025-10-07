@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:webradio_parque_verde/components/animated_scale_pulse.dart';
+import 'package:webradio_parque_verde/components/cover_image.dart';
 
 // imports locais
 import '../components/button_social_media.dart';
-import '../components/cover_image.dart';
 import '../components/wave_form_json.dart';
 import '../constants.dart';
 import '../utils//social_media_service.dart';
@@ -56,11 +57,17 @@ class ViewData extends StatelessWidget {
                         children: <Widget>[
                           Positioned(
                             top: constraints.maxHeight * -.015,
-                            child: Image.asset(
-                              kHeadphonesImg,
-                              height: constraints.maxHeight * .38,
-                              width: 400,
-                              fit: BoxFit.fitHeight,
+                            child: AnimatedScalePulse(
+                              playing: radioService.player.playing,
+                              duration: Duration(milliseconds: 200),
+                              maxScale: 1.0,
+                              minScale: 0.98,
+                              child: Image.asset(
+                                kHeadphonesImg,
+                                height: constraints.maxHeight * .38,
+                                width: 400,
+                                fit: BoxFit.fitHeight,
+                              ),
                             ),
                           ),
                           Visibility(
@@ -89,6 +96,7 @@ class ViewData extends StatelessWidget {
                             child: Positioned(
                               top: constraints.maxHeight * .09,
                               child: Cover(coverUrl: _coverUrl),
+                              // child: AnimatedCover(coverUrl: _coverUrl),
                             ),
                           ),
                         ],
