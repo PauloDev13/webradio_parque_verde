@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
-import 'package:webradio_parque_verde/components/animated_scale_pulse.dart';
-import 'package:webradio_parque_verde/components/cover_image.dart';
+import 'package:webradio_parque_verde/components/radio_wave_form_visualizer.dart';
 
 // imports locais
+import '/components/animated_scale_pulse.dart';
+import '/components/cover_image.dart';
 import '../components/button_social_media.dart';
-import '../components/wave_form_json.dart';
 import '../constants.dart';
 import '../utils//social_media_service.dart';
 import '../utils/radio_service.dart';
@@ -81,20 +81,6 @@ class ViewData extends StatelessWidget {
                           ),
                           Visibility(
                             visible: status,
-                            replacement: Center(
-                              child: Lottie.asset(
-                                kWalkCycleJson,
-                                height: 130,
-                                fit: BoxFit.contain,
-                              ), // Lottie
-                            ),
-                            child: Positioned(
-                              top: constraints.maxHeight * .1,
-                              child: WaveFormJson(playing: player.playing),
-                            ),
-                          ),
-                          Visibility(
-                            visible: status,
                             replacement: Positioned(
                               top: constraints.maxHeight * .36,
                               child: TextInfo(
@@ -105,7 +91,30 @@ class ViewData extends StatelessWidget {
                             child: Positioned(
                               top: constraints.maxHeight * .08,
                               child: Cover(coverUrl: _coverUrl),
-                              // child: AnimatedCover(coverUrl: _coverUrl),
+                            ),
+                          ),
+                          Visibility(
+                            visible: status,
+                            replacement: Center(
+                              child: Lottie.asset(
+                                kWalkCycleJson,
+                                height: 130,
+                                fit: BoxFit.contain,
+                              ), // Lottie
+                            ),
+                            child: Positioned(
+                              top: constraints.maxHeight * .25,
+                              child: RadioWaveformVisualizer(player: player),
+                              // child: WaveFormJson(playing: player.playing),
+                              // child: RadioWaveformVisualizer(
+                              //   player: player,
+                              //   color: Colors.purpleAccent,
+                              //   barCount: 25,
+                              //   maxHeight: 60,
+                              //   animationSpeed: const Duration(
+                              //     milliseconds: 250,
+                              //   ),
+                              // ),
                             ),
                           ),
                         ],

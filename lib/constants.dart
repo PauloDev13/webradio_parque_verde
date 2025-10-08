@@ -6,6 +6,10 @@ const kColor2 = Color(0xFF03ebff);
 const kColor3 = Color(0xFF000b11);
 const kColor4 = Color(0xFFFFFFFF);
 
+var kColor5 = Colors.orangeAccent;
+var kColor6 = Colors.deepPurpleAccent;
+var kColor7 = Colors.redAccent;
+
 // urls
 const kUrlServerLink = 'https://stm6.xradios.com.br:6886/stream';
 const kUrlServerCentova = 'https://centova2.ipstm.net/proxy/bmjceqts/stream';
