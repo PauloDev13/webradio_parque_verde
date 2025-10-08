@@ -15,7 +15,8 @@ const kUrlCover = 'https://centova2.ipstm.net/rpc/bmjceqts/streaminfo.get';
 // Imagens
 const kUrlFallback = 'assets/logo.png';
 const kBackgroundImg = 'assets/animation/animated_background.png';
-const kHeadphonesImg = 'assets/headphones.png';
+const kPhonesImg = 'assets/phones.png';
+const kAstePhonesImg = 'assets/haste_phones.png';
 const kBrandingImg = 'assets/brandingimage.png';
 const kLocucaoImg = 'assets/locucao.png';
 

@@ -46,7 +46,7 @@ class ViewData extends StatelessWidget {
                 height: constraints.maxHeight * .8,
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: constraints.maxHeight * .015),
+                    SizedBox(height: constraints.maxHeight * .01),
                     TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
                     SizedBox(
                       width: constraints.maxWidth,
@@ -56,15 +56,24 @@ class ViewData extends StatelessWidget {
                         alignment: Alignment.topCenter,
                         children: <Widget>[
                           Positioned(
-                            top: constraints.maxHeight * -.015,
+                            top: constraints.maxHeight * -.005,
+                            child: Image.asset(
+                              kAstePhonesImg,
+                              height: constraints.maxHeight * .355,
+                              width: 400,
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                          Positioned(
+                            top: constraints.maxHeight * -.005,
                             child: AnimatedScalePulse(
                               playing: radioService.player.playing,
-                              duration: Duration(milliseconds: 200),
-                              maxScale: 1.0,
+                              duration: Duration(milliseconds: 100),
+                              maxScale: 0.99,
                               minScale: 0.98,
                               child: Image.asset(
-                                kHeadphonesImg,
-                                height: constraints.maxHeight * .38,
+                                kPhonesImg,
+                                height: constraints.maxHeight * .35,
                                 width: 400,
                                 fit: BoxFit.fitHeight,
                               ),
