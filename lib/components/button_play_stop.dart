@@ -27,20 +27,20 @@ class PlayPauseButton extends StatelessWidget {
         final playing = snapshot.data ?? false;
         return ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: 40,
+            maxHeight: 50,
             maxWidth: 50,
-            minHeight: 30,
+            minHeight: 40,
             minWidth: 40,
           ),
           child: FloatingActionButton(
             onPressed: onPressed,
             backgroundColor: backgroundColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: BorderSide(color: borderColor, width: 2),
+              borderRadius: BorderRadius.circular(100),
+              side: BorderSide(color: borderColor, width: 3),
             ),
             child: Icon(
-              playing ? Icons.stop : Icons.play_arrow,
+              playing ? Icons.pause : Icons.play_arrow,
               size: 30,
               color: iconColor,
             ),

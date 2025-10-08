@@ -56,16 +56,16 @@ class ViewData extends StatelessWidget {
                         alignment: Alignment.topCenter,
                         children: <Widget>[
                           Positioned(
-                            top: constraints.maxHeight * -.005,
+                            top: constraints.maxHeight * .015,
                             child: Image.asset(
                               kAstePhonesImg,
-                              height: constraints.maxHeight * .355,
+                              height: constraints.maxHeight * .3,
                               width: 400,
                               fit: BoxFit.fitHeight,
                             ),
                           ),
                           Positioned(
-                            top: constraints.maxHeight * -.005,
+                            top: constraints.maxHeight * .015,
                             child: AnimatedScalePulse(
                               playing: radioService.player.playing,
                               duration: Duration(milliseconds: 100),
@@ -73,7 +73,7 @@ class ViewData extends StatelessWidget {
                               minScale: 0.98,
                               child: Image.asset(
                                 kPhonesImg,
-                                height: constraints.maxHeight * .35,
+                                height: constraints.maxHeight * .3,
                                 width: 400,
                                 fit: BoxFit.fitHeight,
                               ),
@@ -103,7 +103,7 @@ class ViewData extends StatelessWidget {
                               ),
                             ),
                             child: Positioned(
-                              top: constraints.maxHeight * .09,
+                              top: constraints.maxHeight * .08,
                               child: Cover(coverUrl: _coverUrl),
                               // child: AnimatedCover(coverUrl: _coverUrl),
                             ),
