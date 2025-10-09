@@ -15,16 +15,16 @@ class Cover extends StatelessWidget {
       width: size.width * 0.5,
       decoration: BoxDecoration(
         border: Border.all(
-          color: kColor4.withValues(alpha: 0.5), // cor da borda
+          color: kColor2.withValues(alpha: 0.2), // cor da borda
           width: 15,
         ),
-        borderRadius: BorderRadius.circular(100),
+        shape: BoxShape.circle,
       ),
       child: CircleAvatar(
         backgroundImage: _coverUrl.startsWith('http')
             ? NetworkImage(_coverUrl)
             : AssetImage(_coverUrl),
-        backgroundColor: Color(0xFF808b92),
+        backgroundColor: kColor2.withValues(alpha: .2),
         onBackgroundImageError: (exception, stackTrace) =>
             AssetImage(kUrlFallback),
       ),

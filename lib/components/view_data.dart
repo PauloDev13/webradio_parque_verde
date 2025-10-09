@@ -3,8 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:webradio_parque_verde/components/radio_wave_form_visualizer.dart';
 
-// imports locais
-import '/components/animated_scale_pulse.dart';
 import '/components/cover_image.dart';
 import '../components/button_social_media.dart';
 import '../constants.dart';
@@ -56,27 +54,12 @@ class ViewData extends StatelessWidget {
                         alignment: Alignment.topCenter,
                         children: <Widget>[
                           Positioned(
-                            top: constraints.maxHeight * .015,
+                            top: constraints.maxHeight * 0.03,
                             child: Image.asset(
-                              kAstePhonesImg,
-                              height: constraints.maxHeight * .3,
+                              kHeadPhonesImg,
+                              height: constraints.maxHeight * .275,
                               width: 400,
                               fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                          Positioned(
-                            top: constraints.maxHeight * .015,
-                            child: AnimatedScalePulse(
-                              playing: radioService.player.playing,
-                              duration: Duration(milliseconds: 100),
-                              maxScale: 0.99,
-                              minScale: 0.98,
-                              child: Image.asset(
-                                kPhonesImg,
-                                height: constraints.maxHeight * .3,
-                                width: 400,
-                                fit: BoxFit.fitHeight,
-                              ),
                             ),
                           ),
                           Visibility(
@@ -102,19 +85,10 @@ class ViewData extends StatelessWidget {
                                 fit: BoxFit.contain,
                               ), // Lottie
                             ),
+
                             child: Positioned(
-                              top: constraints.maxHeight * .25,
+                              top: constraints.maxHeight * .102,
                               child: RadioWaveformVisualizer(player: player),
-                              // child: WaveFormJson(playing: player.playing),
-                              // child: RadioWaveformVisualizer(
-                              //   player: player,
-                              //   color: Colors.purpleAccent,
-                              //   barCount: 25,
-                              //   maxHeight: 60,
-                              //   animationSpeed: const Duration(
-                              //     milliseconds: 250,
-                              //   ),
-                              // ),
                             ),
                           ),
                         ],
