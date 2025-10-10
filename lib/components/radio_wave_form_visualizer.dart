@@ -15,10 +15,10 @@ class RadioWaveformVisualizer extends StatefulWidget {
   const RadioWaveformVisualizer({
     super.key,
     required this.player,
-    this.barCount = 15,
+    this.barCount = 20,
     this.circleDiameter = 165,
     this.color = kColor2,
-    this.animationSpeed = const Duration(milliseconds: 400),
+    this.animationSpeed = const Duration(milliseconds: 300),
   });
 
   @override
@@ -81,14 +81,18 @@ class _RadioWaveformVisualizerState extends State<RadioWaveformVisualizer>
               children: List.generate(widget.barCount, (index) {
                 return AnimatedContainer(
                   duration: widget.animationSpeed,
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  margin: const EdgeInsets.symmetric(horizontal: 1.5),
                   height: _barHeights[index],
                   width: 4,
                   decoration: BoxDecoration(
-                    color: kColor3.withValues(alpha: 0.8),
+                    color: kColor2.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(4),
                     boxShadow: [
-                      BoxShadow(color: kColor2, blurRadius: 6, spreadRadius: 1),
+                      BoxShadow(
+                        color: kColor3.withValues(alpha: 0.6),
+                        blurRadius: 6,
+                        spreadRadius: 1,
+                      ),
                     ],
                   ),
                 );
