@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
+// imports locais
+import '/constants.dart';
 
+// exibe a capa do álbum
 class Cover extends StatelessWidget {
   const Cover({super.key, required String coverUrl}) : _coverUrl = coverUrl;
 
@@ -11,8 +13,8 @@ class Cover extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
-      height: size.width * 0.5,
-      width: size.width * 0.5,
+      height: size.width * 0.53,
+      width: size.width * 0.53,
       decoration: BoxDecoration(
         border: Border.all(
           color: kColor2.withValues(alpha: 0.2), // cor da borda

@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // imports locais
-import '../components/button_social_media.dart';
-import '../constants.dart';
+import '/components/button_social_media.dart';
+import '/constants.dart';
 
 // classe que cria e exibe o AlertDialog de erro de conexão
 void showAnimatedDialog({

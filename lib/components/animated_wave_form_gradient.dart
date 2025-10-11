@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-class AnimatedGradientRadioVisualizer extends StatefulWidget {
+class AnimatedWaveformGradient extends StatefulWidget {
   final AudioPlayer player;
   final int barCount;
   final double maxHeight;
@@ -11,7 +11,7 @@ class AnimatedGradientRadioVisualizer extends StatefulWidget {
   final Duration animationSpeed;
   final Duration colorCycleDuration;
 
-  const AnimatedGradientRadioVisualizer({
+  const AnimatedWaveformGradient({
     super.key,
     required this.player,
     this.barCount = 20,
@@ -26,12 +26,11 @@ class AnimatedGradientRadioVisualizer extends StatefulWidget {
   });
 
   @override
-  State<AnimatedGradientRadioVisualizer> createState() =>
-      _AnimatedGradientRadioVisualizerState();
+  State<AnimatedWaveformGradient> createState() =>
+      _AnimatedWaveformGradientState();
 }
 
-class _AnimatedGradientRadioVisualizerState
-    extends State<AnimatedGradientRadioVisualizer>
+class _AnimatedWaveformGradientState extends State<AnimatedWaveformGradient>
     with TickerProviderStateMixin {
   late List<double> _barHeights;
   late final Random _random;

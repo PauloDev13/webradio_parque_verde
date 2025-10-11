@@ -3,30 +3,31 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:webradio_parque_verde/constants.dart';
 
-class RadioWaveformVisualizer extends StatefulWidget {
+// imports locais
+import '/constants.dart';
+
+class AnimatedWaveform extends StatefulWidget {
   final AudioPlayer player;
   final int barCount;
   final double circleDiameter;
   final Color color;
   final Duration animationSpeed;
 
-  const RadioWaveformVisualizer({
+  const AnimatedWaveform({
     super.key,
     required this.player,
     this.barCount = 20,
-    this.circleDiameter = 165,
+    this.circleDiameter = 180,
     this.color = kColor2,
     this.animationSpeed = const Duration(milliseconds: 300),
   });
 
   @override
-  State<RadioWaveformVisualizer> createState() =>
-      _RadioWaveformVisualizerState();
+  State<AnimatedWaveform> createState() => _AnimatedWaveformState();
 }
 
-class _RadioWaveformVisualizerState extends State<RadioWaveformVisualizer>
+class _AnimatedWaveformState extends State<AnimatedWaveform>
     with SingleTickerProviderStateMixin {
   late List<double> _barHeights;
   late final Random _random;

@@ -21,7 +21,7 @@ const kBrandingImg = 'assets/brandingimage.png';
 const kLocucaoImg = 'assets/locucao.png';
 
 // Animações .json
-const kWaveFormJson = 'assets/animation/Sound voice waves.json';
+const kLoadingJson = 'assets/animation/loading_2.json';
 const kWalkCycleJson = 'assets/animation/Walk_Cycle.json';
 
 // Fontes

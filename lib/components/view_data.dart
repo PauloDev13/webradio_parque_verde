@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lottie/lottie.dart';
-import 'package:webradio_parque_verde/components/radio_wave_form_visualizer.dart';
+import 'package:webradio_parque_verde/components/stack_phones_cover_waveform.dart';
 
-import '/components/cover_image.dart';
-import '../components/button_social_media.dart';
-import '../constants.dart';
-import '../utils//social_media_service.dart';
-import '../utils/radio_service.dart';
+import '/components/button_social_media.dart';
+import '/constants.dart';
+import '/utils//social_media_service.dart';
+import '/utils/radio_service.dart';
 import 'button_play_stop.dart';
 import 'text_info.dart';
 
@@ -46,56 +44,16 @@ class ViewData extends StatelessWidget {
                   children: <Widget>[
                     SizedBox(height: constraints.maxHeight * .01),
                     TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
-                    SizedBox(
-                      width: constraints.maxWidth,
-                      height: constraints.maxHeight * .4,
-                      child: Stack(
-                        fit: StackFit.passthrough,
-                        alignment: Alignment.topCenter,
-                        children: <Widget>[
-                          Positioned(
-                            top: constraints.maxHeight * 0.03,
-                            child: Image.asset(
-                              kHeadPhonesImg,
-                              height: constraints.maxHeight * .275,
-                              width: 400,
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                          Visibility(
-                            visible: status,
-                            replacement: Positioned(
-                              top: constraints.maxHeight * .36,
-                              child: TextInfo(
-                                metadata: 'Conectando...',
-                                textStyle: kArtistTextStyle,
-                              ),
-                            ),
-                            child: Positioned(
-                              top: constraints.maxHeight * .08,
-                              child: Cover(coverUrl: _coverUrl),
-                            ),
-                          ),
-                          Visibility(
-                            visible: status,
-                            replacement: Center(
-                              child: Lottie.asset(
-                                kWalkCycleJson,
-                                height: 130,
-                                fit: BoxFit.contain,
-                              ), // Lottie
-                            ),
-
-                            child: Positioned(
-                              top: constraints.maxHeight * .102,
-                              child: RadioWaveformVisualizer(player: player),
-                            ),
-                          ),
-                        ],
-                      ),
+                    // chama Stack com as imagens do headphones, cover e
+                    // waveform animado
+                    StackPhonesCoverWaveform(
+                      coverUrl: _coverUrl,
+                      player: player,
+                      status: status,
                     ),
+                    // exibe nome do artista e música em execução
                     Align(
-                      heightFactor: constraints.minHeight * .00085,
+                      heightFactor: constraints.minHeight * .0018,
                       child: Visibility(
                         visible: status,
                         child: Column(
@@ -163,7 +121,7 @@ class ViewData extends StatelessWidget {
               ),
             ],
           );
-        },
+        }, // builder
       ),
     );
   }
