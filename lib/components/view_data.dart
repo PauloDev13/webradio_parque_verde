@@ -42,7 +42,8 @@ class ViewData extends StatelessWidget {
                 height: constraints.maxHeight * .8,
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: constraints.maxHeight * .01),
+                    SizedBox(height: constraints.maxHeight * .06),
+                    TextInfo(metadata: 'Web Rádio', textStyle: kTitleStyle),
                     TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
                     // chama Stack com as imagens do headphones, cover e
                     // waveform animado
@@ -53,7 +54,7 @@ class ViewData extends StatelessWidget {
                     ),
                     // exibe nome do artista e música em execução
                     Align(
-                      heightFactor: constraints.minHeight * .0018,
+                      heightFactor: constraints.minHeight * .002,
                       child: Visibility(
                         visible: status,
                         child: Column(

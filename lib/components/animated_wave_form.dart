@@ -18,7 +18,7 @@ class AnimatedWaveform extends StatefulWidget {
     super.key,
     required this.player,
     this.barCount = 20,
-    this.circleDiameter = 180,
+    this.circleDiameter = 200,
     this.color = kColor2,
     this.animationSpeed = const Duration(milliseconds: 300),
   });
@@ -71,7 +71,7 @@ class _AnimatedWaveformState extends State<AnimatedWaveform>
       duration: const Duration(milliseconds: 300),
       child: Center(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(100),
+          // borderRadius: BorderRadius.circular(100),
           child: SizedBox(
             width: widget.circleDiameter,
             height: widget.circleDiameter,

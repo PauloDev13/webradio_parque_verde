@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:webradio_parque_verde/components/custom_app_bar.dart';
 
 import '/components/animated_dialog_error.dart';
 import '/components/view_data.dart';
@@ -81,7 +80,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color(0xFF001a2c),
-      appBar: CustomAppBar(title: 'Web Rádio'),
       body: Center(
         child: Container(
           padding: EdgeInsets.only(

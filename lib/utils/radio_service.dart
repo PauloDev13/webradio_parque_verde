@@ -189,6 +189,8 @@ class RadioService extends BaseAudioHandler {
         if (results != null && results.isNotEmpty) {
           final first = results.first as Map<String, dynamic>;
           final artworkUrl = first['artworkUrl100'] as String?;
+          artworkUrl?.replaceAll('100x100bb', '600x600bb');
+          // final artworkUrl = first['artworkUrl100'] as String?;
 
           if (artworkUrl != null) {
             return artworkUrl;

@@ -13,15 +13,22 @@ class Cover extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
-      height: size.width * 0.53,
-      width: size.width * 0.53,
+      height: size.width * 0.7,
+      width: size.width * 0.7,
       decoration: BoxDecoration(
+        // borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: kColor2.withValues(alpha: 0.2), // cor da borda
-          width: 15,
+          width: 10,
         ),
         shape: BoxShape.circle,
       ),
+      // child: Image(
+      //   image: _coverUrl.startsWith('http')
+      //       ? NetworkImage(_coverUrl)
+      //       : AssetImage(_coverUrl),
+      //   fit: BoxFit.cover,
+      // ),
       child: CircleAvatar(
         backgroundImage: _coverUrl.startsWith('http')
             ? NetworkImage(_coverUrl)
