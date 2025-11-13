@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 
 import '/components/animated_dialog_error.dart';
 import '/components/view_data.dart';
@@ -30,6 +28,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
   @override
   void initState() {
     super.initState();
+    radioService.updateMetadata();
     // coloca a instância da RadioPlayerPage no observer
     WidgetsBinding.instance.addObserver(this);
     //iniciar o player
@@ -75,23 +74,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
         _coverUrl = newCover;
         _lastSong = song;
       });
-
-      // radioService.updateMetadata(
-      //   artist: artist,
-      //   song: song,
-      //   coverUrl: _coverUrl,
-      // );
-
-      final newMedia = MediaItem(
-        id: 'stream',
-        title: song.isNotEmpty ? song : 'Web Rádio',
-        artist: artist.isNotEmpty ? artist : 'Parque Verde',
-        artUri: Uri.parse(
-          _coverUrl.isNotEmpty ? _coverUrl : kUrlCloudinaryLogo,
-        ),
-      );
-
-      radioService.mediaItem.add(newMedia);
     }
   }
 
@@ -123,51 +105,51 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
               // se o player está com status ready, exibe a capa do álgum,
               //  o artista e o nome da música
               if (status == RadioStatus.ready) {
-                return StreamBuilder<IcyMetadata?>(
-                  stream: player.icyMetadataStream,
-                  builder: (context, snapshot) {
-                    // variáveis locais do StreamBuilder
-                    final icy = snapshot.data;
-                    final rawTitle = icy?.info?.title ?? '';
-                    final parts = rawTitle.split(' - ');
-                    _artist = parts.isNotEmpty
-                        ? parts.first.trim()
-                        : 'Sem informação';
-                    final nameSong = parts.sublist(1).join(' - ').trim();
-                    // a função limpaTitulo tira caracteres indesejáveis no
-                    // final da strig com o nome da música
-                    _song = parts.length > 1 ? nameSong : 'Sem informação';
+                // return StreamBuilder<IcyMetadata?>(
+                //   stream: player.icyMetadataStream,
+                //   builder: (context, snapshot) {
+                //     // variáveis locais do StreamBuilder
+                //     final icy = snapshot.data;
+                //     final rawTitle = icy?.info?.title ?? '';
+                //     final parts = rawTitle.split(' - ');
+                //     _artist = parts.isNotEmpty
+                //         ? parts.first.trim()
+                //         : 'Sem informação';
+                //     final nameSong = parts.sublist(1).join(' - ').trim();
+                //     // a função limpaTitulo tira caracteres indesejáveis no
+                //     // final da strig com o nome da música
+                //     _song = parts.length > 1 ? nameSong : 'Sem informação';
+                //
+                //     // se o título da música não for vazio
+                //     if (rawTitle.isNotEmpty) {
+                //       // a função _updateCover atualiza e exibe os nomes do
+                //       // artista e da música em execução
+                //       _updateCover(artist: _artist, song: _song);
+                //     } else {
+                //       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
+                //     } // fim if
 
-                    // se o título da música não for vazio
-                    if (rawTitle.isNotEmpty) {
-                      // a função _updateCover atualiza e exibe os nomes do
-                      // artista e da música em execução
-                      _updateCover(artist: _artist, song: _song);
-                    } else {
-                      _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
-                    } // fim if
-
-                    // retorna o Widget que exibe os nomes do artista, música e
-                    // a capa do álbum em execução
-                    return ViewData(
-                      status: true,
-                      radioService: radioService,
-                      coverUrl: _coverUrl,
-                      artist: _artist,
-                      song: _song,
-                    );
-                  }, //Builder
+                // retorna o Widget que exibe os nomes do artista, música e
+                // a capa do álbum em execução
+                return ViewData(
+                  status: true,
+                  // radioService: radioService,
+                  // coverUrl: _coverUrl,
+                  // artist: _artist,
+                  // song: _song,
                 );
+                // }, //Builder
+                // );
               } // fim if
               // se o estatus for loading, retorna o Widget que exibe os
               // nomes do artista, música e a capa do álbum em execução
               if (status == RadioStatus.loading) {
                 return ViewData(
                   status: false,
-                  radioService: radioService,
-                  coverUrl: _coverUrl,
-                  artist: _artist,
-                  song: _song,
+                  // radioService: radioService,
+                  // coverUrl: _coverUrl,
+                  // artist: _artist,
+                  // song: _song,
                 );
               }
               // se o status for error, exibe um AlertDialog
@@ -190,10 +172,10 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                   // a capa do álbum em execução
                   return ViewData(
                     status: false,
-                    radioService: radioService,
-                    coverUrl: _coverUrl,
-                    artist: _artist,
-                    song: _song,
+                    // radioService: radioService,
+                    // coverUrl: _coverUrl,
+                    // artist: _artist,
+                    // song: _song,
                   );
                 } // fim if
               }
@@ -201,10 +183,10 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
               // a capa do álbum em execução
               return ViewData(
                 status: false,
-                radioService: radioService,
-                coverUrl: _coverUrl,
-                artist: _artist,
-                song: _song,
+                // radioService: radioService,
+                // coverUrl: _coverUrl,
+                // artist: _artist,
+                // song: _song,
               );
             }, // Builder
           ),

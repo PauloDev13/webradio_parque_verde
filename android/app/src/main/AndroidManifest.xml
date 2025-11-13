@@ -55,7 +55,7 @@
         <!-- Serviço de áudio foreground -->
         <service
                 android:name="com.ryanheise.audioservice.AudioService"
-                android:exported="false"
+                android:exported="true"
                 android:foregroundServiceType="mediaPlayback"
                 tools:ignore="Instantiatable">
             <intent-filter>
@@ -66,7 +66,7 @@
         <!-- Receiver de botões de mídia -->
         <receiver
                 android:name="com.ryanheise.audioservice.MediaButtonReceiver"
-                android:exported="false"
+                android:exported="true"
                 tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON"/>

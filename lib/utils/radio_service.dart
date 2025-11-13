@@ -8,7 +8,6 @@ import 'package:just_audio/just_audio.dart';
 
 // Imports locais
 import '/constants.dart';
-import '/main.dart';
 
 // Enum
 enum RadioStatus { idle, loading, ready, completed, error }
@@ -16,19 +15,19 @@ enum RadioStatus { idle, loading, ready, completed, error }
 class RadioService extends BaseAudioHandler {
   // Variáveis globais
   final AudioPlayer player;
-  // Flag para saber se o player estava tocando
+  // Flag para saber se o player está tocando
   bool wasPlaying = false;
   bool hasError = false;
-  final _statusController = StreamController<RadioStatus>.broadcast();
 
+  final _statusController = StreamController<RadioStatus>.broadcast();
   Stream<RadioStatus> get statusStream => _statusController.stream;
 
   // Construtor
   RadioService({required this.player}) {
-    // Atualiza o estado de playback para o sistema
+    // Setup estado de reprodução para o Android/iOS
     player.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
-    // Status interno para UI
+    // Observa estado interno do player para atualizar status interno
     player.playerStateStream.listen(
       (state) {
         final processingState = state.processingState;
@@ -55,7 +54,9 @@ class RadioService extends BaseAudioHandler {
             break;
           case ProcessingState.completed:
           case ProcessingState.idle:
-            radioService.play();
+            // Tentativa de reconectar
+            startRadio();
+            //   radioService.play();
 
             if (wasPlaying) {
               _statusController.add(RadioStatus.error);
@@ -74,7 +75,7 @@ class RadioService extends BaseAudioHandler {
       },
     );
   }
-  // Converte eventos do just_audio para AudioService PlaybackState
+  // Converte evento do just_audio em PlaybackState para audio_service
   PlaybackState _transformEvent(PlaybackEvent event) {
     return PlaybackState(
       controls: [MediaControl.play, MediaControl.pause, MediaControl.stop],
@@ -99,23 +100,24 @@ class RadioService extends BaseAudioHandler {
     );
   }
 
-  // Inicia o player e conecta ao servidor de stream
+  // Inicia o streaming da rádio
   Future<void> startRadio() async {
     hasError = false;
 
     try {
       _statusController.add(RadioStatus.loading);
-      final currentItem = MediaItem(
+
+      final initialItem = MediaItem(
         id: 'stream',
         title: 'Web Rádio',
         artist: 'Parque Verde',
         artUri: Uri.parse(kUrlCloudinaryLogo),
       );
 
-      mediaItem.add(currentItem);
+      mediaItem.add(initialItem);
 
       await player.setAudioSource(
-        AudioSource.uri(Uri.parse(kUrlServerCentova), tag: currentItem),
+        AudioSource.uri(Uri.parse(kUrlServerCentova), tag: initialItem),
       );
 
       await player.play();
@@ -129,24 +131,38 @@ class RadioService extends BaseAudioHandler {
     }
   }
 
-  Future<void> updateMetadata({
-    required String artist,
-    required String song,
-    required String coverUrl,
-  }) async {
-    debugPrint('Passou no updateMediaItem');
-    try {
-      final newMedia = MediaItem(
-        id: 'stream',
-        title: song.isNotEmpty ? song : 'Web Rádio',
-        artist: artist.isNotEmpty ? artist : 'Parque Verde',
-        artUri: Uri.parse(coverUrl.isNotEmpty ? coverUrl : kUrlCloudinaryLogo),
-      );
+  Future<void> updateMetadata() async {
+    player.icyMetadataStream.listen((metadata) async {
+      final icyInfo = metadata?.info;
+      final rawTitle = icyInfo?.title ?? 'Web Rádio';
+      final parts = rawTitle.split(' - ');
 
-      mediaItem.add(newMedia);
-    } catch (err) {
-      debugPrint('Erro ao atualizar metadados no player: $err');
-    }
+      late String artist = parts.isNotEmpty
+          ? parts.first.trim()
+          : 'Parque Verde';
+      final tempTitle = parts.sublist(1).join(' - ').trim();
+      final title = parts.length > 1 ? tempTitle : 'Sem informação';
+
+      final coverUrl = await fetchCoverItunes(artist, title);
+
+      debugPrint('TITULO $title}');
+      debugPrint('ARTISTA $artist}');
+      debugPrint('CAPA $coverUrl}');
+
+      try {
+        final newMedia = MediaItem(
+          id: 'stream',
+          title: title,
+          artist: artist,
+          artUri: Uri.parse(coverUrl),
+        );
+        mediaItem.add(newMedia);
+
+        await updateMediaItem(newMedia);
+      } catch (err) {
+        debugPrint('Erro ao atualizar metadados no player: $err');
+      }
+    });
   }
 
   // Ativa o play
