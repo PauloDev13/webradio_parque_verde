@@ -13,12 +13,16 @@ const kUrlServerCentova = 'https://centova2.ipstm.net/proxy/bmjceqts/stream';
 const kUrlServer = 'https://usa13.fastcast4u.com/proxy/parqueverde?mp=/1';
 const kUrlCover = 'https://centova2.ipstm.net/rpc/bmjceqts/streaminfo.get';
 
-// Imagens
-const kUrlFallback = 'assets/logo.png';
+// imagens no cloudinary
+const kUrlCloudinaryLogo =
+    'https://res.cloudinary.com/dymccetsg/image/upload/w_600,h_600,c_fill/v1762127704/logo_WR_hnnjvc.png';
+const kUrlCloudinaryLocucao =
+    'https://res.cloudinary.com/dymccetsg/image/upload/w_600,h_600,c_fill/v1762127201/locucao_puf2c9.png';
+
+// Imagens locais
 const kBackgroundImg = 'assets/animation/animated_background.png';
 const kHeadPhonesImg = 'assets/headphones.png';
 const kBrandingImg = 'assets/brandingimage.png';
-const kLocucaoImg = 'assets/locucao.png';
 
 // Animações .json
 const kLoadingJson = 'assets/animation/loading_2.json';

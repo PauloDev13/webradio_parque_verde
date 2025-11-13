@@ -15,10 +15,10 @@ Future<void> main() async {
     builder: () => RadioService(player: AudioPlayer()),
     config: const AudioServiceConfig(
       androidNotificationChannelId: 'com.example.webradio_parque_verde',
-      androidNotificationChannelName: 'WebRádio',
+      androidNotificationChannelName: 'Web Rádio Parque Verde',
       androidNotificationOngoing: true,
       androidStopForegroundOnPause: true,
-      androidNotificationIcon: 'mipmap/ic_launcer',
+      androidNotificationIcon: 'mipmap/ic_launcher',
     ),
   );
   runApp(const WebradioApp());

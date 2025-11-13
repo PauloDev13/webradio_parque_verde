@@ -42,7 +42,7 @@ class ViewData extends StatelessWidget {
                 height: constraints.maxHeight * .8,
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: constraints.maxHeight * .06),
+                    SizedBox(height: constraints.maxHeight * .05),
                     TextInfo(metadata: 'Web Rádio', textStyle: kTitleStyle),
                     TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
                     // chama Stack com as imagens do headphones, cover e
@@ -67,7 +67,7 @@ class ViewData extends StatelessWidget {
                             SizedBox(height: 5),
                             TextInfo(metadata: song, textStyle: kSongTextStyle),
 
-                            SizedBox(height: 20),
+                            SizedBox(height: 15),
                             // Carrega o widget customizado PlayPauseButton
                             // que controla o play/stop do player
                             PlayPauseButton(

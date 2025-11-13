@@ -13,8 +13,8 @@ class Cover extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
-      height: size.width * 0.7,
-      width: size.width * 0.7,
+      height: size.width * 0.65,
+      width: size.width * 0.65,
       decoration: BoxDecoration(
         // borderRadius: BorderRadius.circular(12),
         border: Border.all(
@@ -23,19 +23,12 @@ class Cover extends StatelessWidget {
         ),
         shape: BoxShape.circle,
       ),
-      // child: Image(
-      //   image: _coverUrl.startsWith('http')
-      //       ? NetworkImage(_coverUrl)
-      //       : AssetImage(_coverUrl),
-      //   fit: BoxFit.cover,
-      // ),
+
       child: CircleAvatar(
-        backgroundImage: _coverUrl.startsWith('http')
-            ? NetworkImage(_coverUrl)
-            : AssetImage(_coverUrl),
+        backgroundImage: NetworkImage(_coverUrl),
         backgroundColor: kColor2.withValues(alpha: .2),
         onBackgroundImageError: (exception, stackTrace) =>
-            AssetImage(kUrlFallback),
+            NetworkImage(kUrlCloudinaryLogo),
       ),
     );
   }

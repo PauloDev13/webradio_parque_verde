@@ -105,9 +105,19 @@ class RadioService extends BaseAudioHandler {
 
     try {
       _statusController.add(RadioStatus.loading);
-      await player.setAudioSource(
-        AudioSource.uri(Uri.parse(kUrlServerCentova)),
+      final currentItem = MediaItem(
+        id: 'stream',
+        title: 'Web Rádio',
+        artist: 'Parque Verde',
+        artUri: Uri.parse(kUrlCloudinaryLogo),
       );
+
+      mediaItem.add(currentItem);
+
+      await player.setAudioSource(
+        AudioSource.uri(Uri.parse(kUrlServerCentova), tag: currentItem),
+      );
+
       await player.play();
       wasPlaying = true;
       _statusController.add(RadioStatus.ready);
@@ -119,18 +129,48 @@ class RadioService extends BaseAudioHandler {
     }
   }
 
+  Future<void> updateMetadata({
+    required String artist,
+    required String song,
+    required String coverUrl,
+  }) async {
+    debugPrint('Passou no updateMediaItem');
+    try {
+      final newMedia = MediaItem(
+        id: 'stream',
+        title: song.isNotEmpty ? song : 'Web Rádio',
+        artist: artist.isNotEmpty ? artist : 'Parque Verde',
+        artUri: Uri.parse(coverUrl.isNotEmpty ? coverUrl : kUrlCloudinaryLogo),
+      );
+
+      mediaItem.add(newMedia);
+    } catch (err) {
+      debugPrint('Erro ao atualizar metadados no player: $err');
+    }
+  }
+
   // Ativa o play
   @override
-  Future<void> play() => player.play();
+  Future<void> play() async {
+    if (!player.playing) {
+      await player.play();
+    }
+  }
+
   // Ativa o pause
   @override
-  Future<void> pause() => player.pause();
+  Future<void> pause() async {
+    await player.pause();
+    _statusController.add(RadioStatus.idle);
+  }
+
   // Ativa o pause
   @override
   Future<void> stop() async {
     await player.stop();
     await super.stop();
     wasPlaying = false;
+    _statusController.add(RadioStatus.idle);
   }
 
   // Controla o botão de play/stop
@@ -158,12 +198,12 @@ class RadioService extends BaseAudioHandler {
         final data = jsonDecode(response.body);
         return data["data"]?[0]?["track"]?["imageurl"];
       } else {
-        return kUrlFallback;
+        return kUrlCloudinaryLogo;
       }
     } catch (e) {
       debugPrint("Erro ao buscar capa: $e");
     }
-    return kUrlFallback;
+    return kUrlCloudinaryLogo;
   }
 
   // Usa a API do iTunes para buscar a capa do álbum passando o nome do
@@ -187,13 +227,10 @@ class RadioService extends BaseAudioHandler {
         final List<dynamic>? results = jsonBody['results'];
 
         if (results != null && results.isNotEmpty) {
-          final first = results.first as Map<String, dynamic>;
-          final artworkUrl = first['artworkUrl100'] as String?;
-          artworkUrl?.replaceAll('100x100bb', '600x600bb');
-          // final artworkUrl = first['artworkUrl100'] as String?;
+          final artworkUrl = results.first['artworkUrl100'] as String?;
 
           if (artworkUrl != null) {
-            return artworkUrl;
+            return artworkUrl.replaceAll('100x100bb', '300x300bb');
           }
         }
       } else {
@@ -202,6 +239,6 @@ class RadioService extends BaseAudioHandler {
     } catch (e) {
       debugPrint('Erro ao buscar capa: $e');
     }
-    return kUrlFallback;
+    return kUrlCloudinaryLogo;
   }
 }

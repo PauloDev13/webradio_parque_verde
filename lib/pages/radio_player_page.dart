@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -20,7 +21,7 @@ class RadioPlayerPage extends StatefulWidget {
 class _RadioPlayerPageState extends State<RadioPlayerPage>
     with WidgetsBindingObserver {
   // variáveis locais
-  String _coverUrl = kUrlFallback;
+  String _coverUrl = kUrlCloudinaryLogo;
   String _artist = '';
   String _song = '';
   String? _lastSong;
@@ -63,15 +64,34 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
       // se o nome do artista começa com "Paulo", exibe a foto do locutor
       // se não, exibe a capa do álbum
       setState(() {
-        artist.startsWith('Paulo') ? newCover = kLocucaoImg : newCover;
+        artist.startsWith('Paulo')
+            ? newCover = kUrlCloudinaryLocucao
+            : newCover;
         artist.startsWith('Web') ||
                 song.startsWith('Hora') ||
                 song.startsWith('Minuto')
-            ? newCover = kUrlFallback
+            ? newCover = kUrlCloudinaryLogo
             : newCover;
         _coverUrl = newCover;
         _lastSong = song;
       });
+
+      // radioService.updateMetadata(
+      //   artist: artist,
+      //   song: song,
+      //   coverUrl: _coverUrl,
+      // );
+
+      final newMedia = MediaItem(
+        id: 'stream',
+        title: song.isNotEmpty ? song : 'Web Rádio',
+        artist: artist.isNotEmpty ? artist : 'Parque Verde',
+        artUri: Uri.parse(
+          _coverUrl.isNotEmpty ? _coverUrl : kUrlCloudinaryLogo,
+        ),
+      );
+
+      radioService.mediaItem.add(newMedia);
     }
   }
 
@@ -83,7 +103,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
       body: Center(
         child: Container(
           padding: EdgeInsets.only(
-            top: size.width * .03,
+            top: size.width * .01,
             right: size.width * .05,
             left: size.width * .05,
           ),
@@ -126,6 +146,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                     } else {
                       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
                     } // fim if
+
                     // retorna o Widget que exibe os nomes do artista, música e
                     // a capa do álbum em execução
                     return ViewData(
