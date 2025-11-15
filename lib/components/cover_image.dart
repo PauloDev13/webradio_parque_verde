@@ -11,24 +11,18 @@ class Cover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    return Container(
-      height: size.width * 0.65,
-      width: size.width * 0.65,
-      decoration: BoxDecoration(
-        // borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: kColor2.withValues(alpha: 0.2), // cor da borda
-          width: 10,
+    return CircleAvatar(
+      radius: 135,
+      backgroundColor: Colors.grey[300],
+      child: ClipOval(
+        child: Image.network(
+          _coverUrl,
+          width: 250, // deve ser o dobro do radius
+          height: 250,
+          fit: BoxFit.cover, // mantém a proporção e cobre todo o círculo
+          errorBuilder: (context, error, stackTrace) =>
+              Image.network(kUrlCloudinaryLogo),
         ),
-        shape: BoxShape.circle,
-      ),
-
-      child: CircleAvatar(
-        backgroundImage: NetworkImage(_coverUrl),
-        backgroundColor: kColor2.withValues(alpha: .2),
-        onBackgroundImageError: (exception, stackTrace) =>
-            NetworkImage(kUrlCloudinaryLogo),
       ),
     );
   }

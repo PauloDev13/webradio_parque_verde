@@ -20,7 +20,6 @@ class LoadingJson extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 fit: BoxFit.contain,
               ),
-              const Text('Conectando...', style: kArtistTextStyle),
             ],
           )
         : const SizedBox.shrink();

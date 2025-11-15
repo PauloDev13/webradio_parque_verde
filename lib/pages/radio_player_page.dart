@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:webradio_parque_verde/components/animated_dialog_error.dart';
 
-import '/components/animated_dialog_error.dart';
 import '/components/view_data.dart';
 // Imports locais
 import '/constants.dart';
@@ -20,15 +20,13 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     with WidgetsBindingObserver {
   // variáveis locais
   String _coverUrl = kUrlCloudinaryLogo;
-  String _artist = '';
-  String _song = '';
   String? _lastSong;
   bool _dialogOpen = false;
 
   @override
   void initState() {
     super.initState();
-    radioService.updateMetadata();
+    radioService.lastMediaItem;
     // coloca a instância da RadioPlayerPage no observer
     WidgetsBinding.instance.addObserver(this);
     //iniciar o player
@@ -101,59 +99,22 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
             stream: radioService.statusStream,
             builder: (context, snapshot) {
               final status = snapshot.data ?? RadioStatus.idle;
-              final player = radioService.player;
               // se o player está com status ready, exibe a capa do álgum,
               //  o artista e o nome da música
               if (status == RadioStatus.ready) {
-                // return StreamBuilder<IcyMetadata?>(
-                //   stream: player.icyMetadataStream,
-                //   builder: (context, snapshot) {
-                //     // variáveis locais do StreamBuilder
-                //     final icy = snapshot.data;
-                //     final rawTitle = icy?.info?.title ?? '';
-                //     final parts = rawTitle.split(' - ');
-                //     _artist = parts.isNotEmpty
-                //         ? parts.first.trim()
-                //         : 'Sem informação';
-                //     final nameSong = parts.sublist(1).join(' - ').trim();
-                //     // a função limpaTitulo tira caracteres indesejáveis no
-                //     // final da strig com o nome da música
-                //     _song = parts.length > 1 ? nameSong : 'Sem informação';
-                //
-                //     // se o título da música não for vazio
-                //     if (rawTitle.isNotEmpty) {
-                //       // a função _updateCover atualiza e exibe os nomes do
-                //       // artista e da música em execução
-                //       _updateCover(artist: _artist, song: _song);
-                //     } else {
-                //       _updateCover(artist: 'Web Rádio', song: 'Parque Verde');
-                //     } // fim if
-
                 // retorna o Widget que exibe os nomes do artista, música e
                 // a capa do álbum em execução
-                return ViewData(
-                  status: true,
-                  // radioService: radioService,
-                  // coverUrl: _coverUrl,
-                  // artist: _artist,
-                  // song: _song,
-                );
-                // }, //Builder
-                // );
+                return ViewData(status: true);
               } // fim if
               // se o estatus for loading, retorna o Widget que exibe os
               // nomes do artista, música e a capa do álbum em execução
               if (status == RadioStatus.loading) {
-                return ViewData(
-                  status: false,
-                  // radioService: radioService,
-                  // coverUrl: _coverUrl,
-                  // artist: _artist,
-                  // song: _song,
-                );
+                return ViewData(status: false);
               }
               // se o status for error, exibe um AlertDialog
-              if (status == RadioStatus.error) {
+              if (status == RadioStatus.error ||
+                  status == RadioStatus.completed) {
+                debugPrint('PROCESSANDO ESTADO NA PAGE: $status');
                 if (!_dialogOpen) {
                   _dialogOpen = true;
                   // espera a tela ser construída para chamar o dialog
@@ -170,24 +131,12 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                   }); // WidgetsBinding
                   // retorna o Widget que exibe os nomes do artista, música e
                   // a capa do álbum em execução
-                  return ViewData(
-                    status: false,
-                    // radioService: radioService,
-                    // coverUrl: _coverUrl,
-                    // artist: _artist,
-                    // song: _song,
-                  );
+                  return ViewData(status: false);
                 } // fim if
               }
               // retorna o Widget que exibe os nomes do artista, música e
               // a capa do álbum em execução
-              return ViewData(
-                status: false,
-                // radioService: radioService,
-                // coverUrl: _coverUrl,
-                // artist: _artist,
-                // song: _song,
-              );
+              return ViewData(status: false);
             }, // Builder
           ),
         ),

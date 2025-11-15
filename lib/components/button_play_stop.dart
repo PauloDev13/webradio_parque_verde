@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '/main.dart';
+
 class PlayPauseButton extends StatelessWidget {
-  final Stream<bool> playingStream;
-  final bool initialPlaying;
   final VoidCallback onPressed;
   final Color borderColor;
   final Color iconColor;
@@ -10,8 +10,6 @@ class PlayPauseButton extends StatelessWidget {
 
   const PlayPauseButton({
     super.key,
-    required this.playingStream,
-    required this.initialPlaying,
     required this.onPressed,
     required this.borderColor,
     required this.iconColor,
@@ -20,9 +18,10 @@ class PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final player = radioService.player;
     return StreamBuilder<bool>(
-      stream: playingStream,
-      initialData: initialPlaying,
+      stream: player.playingStream,
+      initialData: player.playing,
       builder: (context, snapshot) {
         final playing = snapshot.data ?? false;
         return ConstrainedBox(

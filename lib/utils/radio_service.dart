@@ -15,59 +15,40 @@ enum RadioStatus { idle, loading, ready, completed, error }
 class RadioService extends BaseAudioHandler {
   // Variáveis globais
   final AudioPlayer player;
-  // Flag para saber se o player está tocando
   bool wasPlaying = false;
   bool hasError = false;
+
+  // Armazena o último item válido recebido
+  MediaItem? lastMediaItem;
+  StreamSubscription<IcyMetadata?>? _icySubscription;
 
   final _statusController = StreamController<RadioStatus>.broadcast();
   Stream<RadioStatus> get statusStream => _statusController.stream;
 
-  // Construtor
+  // ---------------------------------------------------------------------------
+  // CONSTRUTOR
+  // ---------------------------------------------------------------------------
   RadioService({required this.player}) {
-    // Setup estado de reprodução para o Android/iOS
-    player.playbackEventStream.map(_transformEvent).pipe(playbackState);
-
-    // Observa estado interno do player para atualizar status interno
-    player.playerStateStream.listen(
-      (state) {
-        final processingState = state.processingState;
-        final isPlaying = state.playing;
-
-        if (isPlaying) {
-          wasPlaying = true;
-        }
-        if (hasError) {
-          return;
-        }
-
-        switch (processingState) {
-          case ProcessingState.loading:
-          case ProcessingState.buffering:
-            _statusController.add(RadioStatus.loading);
-            break;
-          case ProcessingState.ready:
-            if (wasPlaying) {
-              _statusController.add(RadioStatus.ready);
-            } else {
-              _statusController.add(RadioStatus.idle);
-            }
-            break;
-          case ProcessingState.completed:
-          case ProcessingState.idle:
-            // Tentativa de reconectar
-            startRadio();
-            //   radioService.play();
-
-            if (wasPlaying) {
-              _statusController.add(RadioStatus.error);
-              hasError = true;
-            } else {
-              _statusController.add(RadioStatus.idle);
-            }
-            wasPlaying = false;
-            break;
+    // Listener de metadados ICY (apenas uma vez!)
+    _icySubscription = player.icyMetadataStream.listen(
+      (metadata) {
+        if (metadata != null) {
+          processIcyMetadata(metadata);
         }
       },
+      onError: (e, st) {
+        // hasError = true;
+        // _statusController.add(RadioStatus.error);
+        debugPrint('Erro no Icy: $e');
+      },
+    );
+
+    // Sincroniza PlaybackState com audio_service
+    player.playbackEventStream.map(_transformEvent).pipe(playbackState);
+
+    // Listener do estado do player
+    player.playerStateStream.listen(
+      processPlayerState,
       onError: (e, st) {
         hasError = true;
         _statusController.add(RadioStatus.error);
@@ -75,7 +56,97 @@ class RadioService extends BaseAudioHandler {
       },
     );
   }
-  // Converte evento do just_audio em PlaybackState para audio_service
+
+  // ---------------------------------------------------------------------------
+  // PROCESSAMENTO DE METADADOS ICY
+  // ---------------------------------------------------------------------------
+  Future<void> processIcyMetadata(IcyMetadata metadata) async {
+    final icyInfo = metadata.info;
+
+    if (icyInfo == null) return;
+
+    final raw = icyInfo.title?.trim() ?? '';
+
+    if (raw.isEmpty) return;
+
+    final lower = raw.toLowerCase();
+
+    if (lower == 'web rádio' || lower == 'parque verde') return;
+
+    final parts = raw.split(' - ');
+
+    final artist = parts.first.trim();
+    final title = parts.length > 1
+        ? parts.sublist(1).join(' - ').trim()
+        : 'Sem informação';
+
+    final coverUrl = await fetchCoverItunes(artist, title);
+
+    final newMedia = MediaItem(
+      id: 'stream',
+      title: title,
+      artist: artist,
+      artUri: Uri.parse(coverUrl),
+    );
+
+    lastMediaItem = newMedia;
+
+    mediaItem.add(newMedia);
+
+    await updateMediaItem(newMedia);
+  }
+
+  // ---------------------------------------------------------------------------
+  // PROCESSAMENTO DO ESTADO DO PLAYER
+  // ---------------------------------------------------------------------------
+  void processPlayerState(PlayerState state) {
+    final processingState = state.processingState;
+    final isPlaying = state.playing;
+
+    debugPrint('PROCESSANDO ESTADO NO SERVICE: $processingState');
+
+    if (isPlaying) {
+      wasPlaying = true;
+    }
+    if (hasError) {
+      return;
+    }
+    switch (processingState) {
+      case ProcessingState.loading:
+      case ProcessingState.buffering:
+        _statusController.add(RadioStatus.loading);
+        break;
+      case ProcessingState.ready:
+        if (wasPlaying) {
+          _statusController.add(RadioStatus.ready);
+        } else {
+          _statusController.add(RadioStatus.idle);
+        }
+        break;
+      case ProcessingState.completed:
+        if (wasPlaying) {
+          _statusController.add(RadioStatus.error);
+        } else {
+          _statusController.add(RadioStatus.completed);
+        }
+        hasError = true;
+        wasPlaying = false;
+        break;
+      case ProcessingState.idle:
+        if (wasPlaying) {
+          _statusController.add(RadioStatus.error);
+        } else {
+          _statusController.add(RadioStatus.idle);
+        }
+        hasError = true;
+        wasPlaying = false;
+        break;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // CONVERSÃO PLAYBACK EVENT
+  // ---------------------------------------------------------------------------
   PlaybackState _transformEvent(PlaybackEvent event) {
     return PlaybackState(
       controls: [MediaControl.play, MediaControl.pause, MediaControl.stop],
@@ -100,7 +171,9 @@ class RadioService extends BaseAudioHandler {
     );
   }
 
-  // Inicia o streaming da rádio
+  // ---------------------------------------------------------------------------
+  // START RADIO
+  // ---------------------------------------------------------------------------
   Future<void> startRadio() async {
     hasError = false;
 
@@ -109,121 +182,70 @@ class RadioService extends BaseAudioHandler {
 
       final initialItem = MediaItem(
         id: 'stream',
-        title: 'Web Rádio',
-        artist: 'Parque Verde',
+        title: 'Conectando',
+        artist: 'Aguarde...',
         artUri: Uri.parse(kUrlCloudinaryLogo),
       );
 
       mediaItem.add(initialItem);
 
+      await updateMediaItem(initialItem);
+
       await player.setAudioSource(
         AudioSource.uri(Uri.parse(kUrlServerCentova), tag: initialItem),
       );
 
-      await player.play();
+      await play();
+      hasError = false;
       wasPlaying = true;
       _statusController.add(RadioStatus.ready);
     } catch (e) {
       debugPrint("Erro ao conectar servidor de stream: $e");
+      _statusController.add(RadioStatus.error);
+      debugPrint('O SERVIDOR ESTÁ FORA');
       hasError = true;
       wasPlaying = false;
-      _statusController.add(RadioStatus.error);
     }
   }
 
-  Future<void> updateMetadata() async {
-    player.icyMetadataStream.listen((metadata) async {
-      final icyInfo = metadata?.info;
-      final rawTitle = icyInfo?.title ?? 'Web Rádio';
-      final parts = rawTitle.split(' - ');
-
-      late String artist = parts.isNotEmpty
-          ? parts.first.trim()
-          : 'Parque Verde';
-      final tempTitle = parts.sublist(1).join(' - ').trim();
-      final title = parts.length > 1 ? tempTitle : 'Sem informação';
-
-      final coverUrl = await fetchCoverItunes(artist, title);
-
-      debugPrint('TITULO $title}');
-      debugPrint('ARTISTA $artist}');
-      debugPrint('CAPA $coverUrl}');
-
-      try {
-        final newMedia = MediaItem(
-          id: 'stream',
-          title: title,
-          artist: artist,
-          artUri: Uri.parse(coverUrl),
-        );
-        mediaItem.add(newMedia);
-
-        await updateMediaItem(newMedia);
-      } catch (err) {
-        debugPrint('Erro ao atualizar metadados no player: $err');
-      }
-    });
-  }
-
-  // Ativa o play
+  // ---------------------------------------------------------------------------
+  // CONTROLES
+  // ---------------------------------------------------------------------------
   @override
   Future<void> play() async {
-    if (!player.playing) {
-      await player.play();
+    await player.play();
+    if (lastMediaItem != null) {
+      mediaItem.add(lastMediaItem);
+      await updateMediaItem(lastMediaItem!);
     }
   }
 
-  // Ativa o pause
   @override
   Future<void> pause() async {
     await player.pause();
-    _statusController.add(RadioStatus.idle);
   }
 
-  // Ativa o pause
   @override
   Future<void> stop() async {
     await player.stop();
-    await super.stop();
-    wasPlaying = false;
-    _statusController.add(RadioStatus.idle);
+    if (lastMediaItem != null) {
+      mediaItem.add(lastMediaItem);
+    }
+    _statusController.add(RadioStatus.ready);
+    return super.stop();
   }
 
-  // Controla o botão de play/stop
   Future<void> togglePlayPause() async {
     if (player.playing) {
-      await pause();
+      await stop();
     } else {
-      await startRadio();
+      await play();
     }
   }
 
-  // Exclui do nome da música os caracteres que vêm por padrão dentro de [] no
-  // final do nome da música
-  String limparTitulo(String titulo) {
-    // Remove qualquer [conteúdo] no final do título
-    return titulo.replaceAll(RegExp(r'\s*\[[^\]]*\]$'), '').trim();
-  }
-
-  // Busca a capa do álbum usando a url do provedor de stream
-  Future<String?> fetchCover() async {
-    try {
-      final response = await http.get(Uri.parse(kUrlCover));
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data["data"]?[0]?["track"]?["imageurl"];
-      } else {
-        return kUrlCloudinaryLogo;
-      }
-    } catch (e) {
-      debugPrint("Erro ao buscar capa: $e");
-    }
-    return kUrlCloudinaryLogo;
-  }
-
-  // Usa a API do iTunes para buscar a capa do álbum passando o nome do
-  // artista e o título da música
+  // ---------------------------------------------------------------------------
+  // CAPA VIA ITUNES
+  // ---------------------------------------------------------------------------
   Future<String> fetchCoverItunes(String artist, String music) async {
     try {
       final query = Uri.encodeComponent('$artist $music');

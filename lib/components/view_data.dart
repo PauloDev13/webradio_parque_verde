@@ -1,36 +1,22 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:webradio_parque_verde/components/stack_phones_cover_waveform.dart';
-import 'package:webradio_parque_verde/main.dart';
 
+import '/components/button_play_stop.dart';
 import '/components/button_social_media.dart';
+import '/components/display_cover_or_loading.dart';
 import '/constants.dart';
+import '/main.dart';
 import '/utils//social_media_service.dart';
-import 'button_play_stop.dart';
 import 'text_info.dart';
 
 class ViewData extends StatelessWidget {
-  const ViewData({
-    super.key,
-    // required this.radioService,
-    // required String coverUrl,
-    // required this.artist,
-    // required this.song,
-    required this.status,
-  });
+  const ViewData({super.key, required this.status});
 
-  // final RadioService radioService;
-  // final String _coverUrl;
-  // final String artist;
-  // final String song;
   final bool status;
 
   @override
   Widget build(BuildContext context) {
-    // Variável local
-    final player = radioService.player;
-
     return SizedBox.expand(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -38,63 +24,28 @@ class ViewData extends StatelessWidget {
             stream: radioService.mediaItem,
             builder: (context, snapshot) {
               final item = snapshot.data;
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: constraints.maxWidth,
-                    height: constraints.maxHeight * .8,
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: constraints.maxHeight * .05),
-                        TextInfo(metadata: 'Web Rádio', textStyle: kTitleStyle),
-                        TextInfo(
-                          metadata: 'Parque Verde',
-                          textStyle: kTitleStyle,
-                        ),
-                        // chama Stack com as imagens do headphones, cover e
-                        // waveform animado
-                        StackPhonesCoverWaveform(
-                          coverUrl: item!.artUri.toString(),
-                          player: player,
-                          status: status,
-                        ),
-                        // exibe nome do artista e música em execução
-                        Align(
-                          heightFactor: constraints.minHeight * .002,
-                          child: Visibility(
-                            visible: status,
-                            child: Column(
-                              children: <Widget>[
-                                // títulos do artista e música em execução
-                                TextInfo(
-                                  metadata: item.artist.toString(),
-                                  textStyle: kArtistTextStyle,
-                                ),
-                                SizedBox(height: 5),
-                                TextInfo(
-                                  metadata: item.title.toString(),
-                                  textStyle: kSongTextStyle,
-                                ),
 
-                                SizedBox(height: 15),
-                                // Carrega o widget customizado PlayPauseButton
-                                // que controla o play/stop do player
-                                PlayPauseButton(
-                                  playingStream: player.playingStream,
-                                  backgroundColor: kColor3,
-                                  borderColor: kColor2.withValues(alpha: 0.6),
-                                  iconColor: kColor2,
-                                  initialPlaying: player.playing,
-                                  onPressed: radioService.togglePlayPause,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+              final artist = item?.artist ?? 'Parque Verde';
+              final title = item?.title ?? 'Web Rádio';
+              final cover = item?.artUri?.toString() ?? kUrlCloudinaryLogo;
+
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: constraints.maxHeight * .05),
+                  TextInfo(metadata: 'Web Rádio', textStyle: kTitleStyle),
+                  TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
+                  // chama Stack com as imagens do headphones, cover e
+                  DisplayCoverOrLoading(coverUrl: cover, status: status),
+                  // títulos do artista e música em execução
+                  TextInfo(metadata: artist, textStyle: kArtistTextStyle),
+                  SizedBox(height: 5),
+                  TextInfo(metadata: title, textStyle: kSongTextStyle),
+
+                  PlayPauseButton(
+                    backgroundColor: kColor3,
+                    borderColor: kColor2.withValues(alpha: 0.6),
+                    iconColor: kColor2,
+                    onPressed: radioService.togglePlayPause,
                   ),
                   Expanded(
                     child: Container(
