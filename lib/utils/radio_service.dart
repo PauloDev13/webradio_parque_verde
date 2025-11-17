@@ -17,6 +17,7 @@ class RadioService extends BaseAudioHandler {
   final AudioPlayer player;
   bool wasPlaying = false;
   bool hasError = false;
+  bool isLoading = false;
 
   // Armazena o último item válido recebido
   MediaItem? lastMediaItem;
@@ -37,15 +38,14 @@ class RadioService extends BaseAudioHandler {
         }
       },
       onError: (e, st) {
-        // hasError = true;
-        // _statusController.add(RadioStatus.error);
+        hasError = true;
+        _statusController.add(RadioStatus.error);
         debugPrint('Erro no Icy: $e');
       },
     );
 
     // Sincroniza PlaybackState com audio_service
     player.playbackEventStream.map(_transformEvent).pipe(playbackState);
-
     // Listener do estado do player
     player.playerStateStream.listen(
       processPlayerState,
@@ -80,13 +80,46 @@ class RadioService extends BaseAudioHandler {
         ? parts.sublist(1).join(' - ').trim()
         : 'Sem informação';
 
-    final coverUrl = await fetchCoverItunes(artist, title);
+    final previousCoverUrl = lastMediaItem?.artUri.toString();
 
-    final newMedia = MediaItem(
+    debugPrint('CAPA ANTERIOR: $previousCoverUrl');
+
+    var coverUrl = await fetchCoverItunes(artist, title);
+
+    debugPrint('NOVA CAPA: $coverUrl');
+
+    artist.startsWith('Paulo') ? coverUrl = kUrlCloudinaryLocucao : coverUrl;
+    artist.startsWith('Web') ||
+            title.startsWith('Hora') ||
+            title.startsWith('Minuto')
+        ? coverUrl = kUrlCloudinaryLogo
+        : coverUrl;
+
+    var nextCover = previousCoverUrl;
+
+    var newMedia = MediaItem(
       id: 'stream',
       title: title,
       artist: artist,
-      artUri: Uri.parse(coverUrl),
+      artUri: Uri.parse(nextCover!),
+    );
+
+    final isEquals = previousCoverUrl != coverUrl;
+
+    debugPrint('SÃO DIFERENTES: $isEquals');
+
+    if (isEquals) {
+      debugPrint('ENTROU NO IF');
+      nextCover = coverUrl;
+    }
+
+    debugPrint('CAPA QUE SERÁ EXIBIDA: $nextCover');
+
+    newMedia = MediaItem(
+      id: 'stream',
+      title: title,
+      artist: artist,
+      artUri: Uri.parse(nextCover),
     );
 
     lastMediaItem = newMedia;
@@ -103,8 +136,6 @@ class RadioService extends BaseAudioHandler {
     final processingState = state.processingState;
     final isPlaying = state.playing;
 
-    debugPrint('PROCESSANDO ESTADO NO SERVICE: $processingState');
-
     if (isPlaying) {
       wasPlaying = true;
     }
@@ -115,8 +146,17 @@ class RadioService extends BaseAudioHandler {
       case ProcessingState.loading:
       case ProcessingState.buffering:
         _statusController.add(RadioStatus.loading);
+        isLoading = true;
         break;
       case ProcessingState.ready:
+        if (wasPlaying) {
+          _statusController.add(RadioStatus.ready);
+          isLoading = false;
+        } else {
+          _statusController.add(RadioStatus.idle);
+        }
+        break;
+      case ProcessingState.idle:
         if (wasPlaying) {
           _statusController.add(RadioStatus.ready);
         } else {
@@ -127,19 +167,8 @@ class RadioService extends BaseAudioHandler {
         if (wasPlaying) {
           _statusController.add(RadioStatus.error);
         } else {
-          _statusController.add(RadioStatus.completed);
-        }
-        hasError = true;
-        wasPlaying = false;
-        break;
-      case ProcessingState.idle:
-        if (wasPlaying) {
-          _statusController.add(RadioStatus.error);
-        } else {
           _statusController.add(RadioStatus.idle);
         }
-        hasError = true;
-        wasPlaying = false;
         break;
     }
   }
@@ -176,13 +205,12 @@ class RadioService extends BaseAudioHandler {
   // ---------------------------------------------------------------------------
   Future<void> startRadio() async {
     hasError = false;
-
     try {
       _statusController.add(RadioStatus.loading);
 
       final initialItem = MediaItem(
         id: 'stream',
-        title: 'Conectando',
+        title: 'Conectando...',
         artist: 'Aguarde...',
         artUri: Uri.parse(kUrlCloudinaryLogo),
       );
@@ -196,13 +224,9 @@ class RadioService extends BaseAudioHandler {
       );
 
       await play();
-      hasError = false;
-      wasPlaying = true;
-      _statusController.add(RadioStatus.ready);
     } catch (e) {
       debugPrint("Erro ao conectar servidor de stream: $e");
       _statusController.add(RadioStatus.error);
-      debugPrint('O SERVIDOR ESTÁ FORA');
       hasError = true;
       wasPlaying = false;
     }
@@ -214,10 +238,10 @@ class RadioService extends BaseAudioHandler {
   @override
   Future<void> play() async {
     await player.play();
-    if (lastMediaItem != null) {
-      mediaItem.add(lastMediaItem);
-      await updateMediaItem(lastMediaItem!);
-    }
+    // if (lastMediaItem != null) {
+    //   mediaItem.add(lastMediaItem);
+    //   await updateMediaItem(lastMediaItem!);
+    // }
   }
 
   @override
@@ -228,10 +252,9 @@ class RadioService extends BaseAudioHandler {
   @override
   Future<void> stop() async {
     await player.stop();
-    if (lastMediaItem != null) {
-      mediaItem.add(lastMediaItem);
-    }
-    _statusController.add(RadioStatus.ready);
+    // if (lastMediaItem != null) {
+    //   mediaItem.add(lastMediaItem);
+    // }
     return super.stop();
   }
 

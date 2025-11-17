@@ -1,10 +1,10 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:webradio_parque_verde/components/cover_image.dart';
 
 import '/components/button_play_stop.dart';
 import '/components/button_social_media.dart';
-import '/components/display_cover_or_loading.dart';
 import '/constants.dart';
 import '/main.dart';
 import '/utils//social_media_service.dart';
@@ -34,19 +34,24 @@ class ViewData extends StatelessWidget {
                   SizedBox(height: constraints.maxHeight * .05),
                   TextInfo(metadata: 'Web Rádio', textStyle: kTitleStyle),
                   TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
-                  // chama Stack com as imagens do headphones, cover e
-                  DisplayCoverOrLoading(coverUrl: cover, status: status),
-                  // títulos do artista e música em execução
+
+                  // exibe a capa do álbum em execução
+                  Cover(coverUrl: cover),
+
+                  // exibe títulos do artista e música em execução
                   TextInfo(metadata: artist, textStyle: kArtistTextStyle),
                   SizedBox(height: 5),
                   TextInfo(metadata: title, textStyle: kSongTextStyle),
 
+                  // botões play/stop
                   PlayPauseButton(
                     backgroundColor: kColor3,
                     borderColor: kColor2.withValues(alpha: 0.6),
                     iconColor: kColor2,
                     onPressed: radioService.togglePlayPause,
                   ),
+
+                  // botões Instagram e Whatsapp
                   Expanded(
                     child: Container(
                       alignment: Alignment.bottomCenter,

@@ -1,10 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:webradio_parque_verde/components/animated_dialog_error.dart';
 
-import '/components/view_data.dart';
 // Imports locais
+import '/components/view_data.dart';
 import '/constants.dart';
 import '/main.dart';
 import '/utils/radio_service.dart';
@@ -19,8 +17,6 @@ class RadioPlayerPage extends StatefulWidget {
 class _RadioPlayerPageState extends State<RadioPlayerPage>
     with WidgetsBindingObserver {
   // variáveis locais
-  String _coverUrl = kUrlCloudinaryLogo;
-  String? _lastSong;
   bool _dialogOpen = false;
 
   @override
@@ -48,31 +44,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
     radioService.stop();
     // destrói a instancia do waveform
     super.dispose();
-  }
-
-  // Atualiza a capa do álbum quando a música muda
-  Future<void> _updateCover({
-    required String artist,
-    required String song,
-  }) async {
-    if (_lastSong != song) {
-      // final newCover = await radioService.fetchCover();
-      var newCover = await radioService.fetchCoverItunes(artist, song);
-      // se o nome do artista começa com "Paulo", exibe a foto do locutor
-      // se não, exibe a capa do álbum
-      setState(() {
-        artist.startsWith('Paulo')
-            ? newCover = kUrlCloudinaryLocucao
-            : newCover;
-        artist.startsWith('Web') ||
-                song.startsWith('Hora') ||
-                song.startsWith('Minuto')
-            ? newCover = kUrlCloudinaryLogo
-            : newCover;
-        _coverUrl = newCover;
-        _lastSong = song;
-      });
-    }
   }
 
   @override
@@ -106,15 +77,13 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
                 // a capa do álbum em execução
                 return ViewData(status: true);
               } // fim if
-              // se o estatus for loading, retorna o Widget que exibe os
-              // nomes do artista, música e a capa do álbum em execução
+              // se loading, exibe widget loading no botão play/stop
               if (status == RadioStatus.loading) {
                 return ViewData(status: false);
               }
               // se o status for error, exibe um AlertDialog
               if (status == RadioStatus.error ||
                   status == RadioStatus.completed) {
-                debugPrint('PROCESSANDO ESTADO NA PAGE: $status');
                 if (!_dialogOpen) {
                   _dialogOpen = true;
                   // espera a tela ser construída para chamar o dialog
@@ -136,7 +105,7 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
               }
               // retorna o Widget que exibe os nomes do artista, música e
               // a capa do álbum em execução
-              return ViewData(status: false);
+              return ViewData(status: true);
             }, // Builder
           ),
         ),

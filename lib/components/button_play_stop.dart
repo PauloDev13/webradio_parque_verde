@@ -18,34 +18,40 @@ class PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final player = radioService.player;
-    return StreamBuilder<bool>(
-      stream: player.playingStream,
-      initialData: player.playing,
-      builder: (context, snapshot) {
-        final playing = snapshot.data ?? false;
-        return ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: 50,
-            maxWidth: 50,
-            minHeight: 40,
-            minWidth: 40,
-          ),
-          child: FloatingActionButton(
-            onPressed: onPressed,
-            backgroundColor: backgroundColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-              side: BorderSide(color: borderColor, width: 3),
-            ),
-            child: Icon(
-              playing ? Icons.pause : Icons.play_arrow,
-              size: 25,
-              color: iconColor,
-            ),
-          ),
-        );
-      }, // builder
+    final isPlaying = radioService.player.playing;
+    final isLoading = radioService.isLoading;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 50,
+        maxWidth: 50,
+        minHeight: 40,
+        minWidth: 40,
+      ),
+      child: FloatingActionButton(
+        onPressed: onPressed,
+        backgroundColor: backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100),
+          side: BorderSide(color: borderColor, width: 3),
+        ),
+        child: _buildContent(isPlaying, isLoading),
+      ),
+    ); // builder
+  }
+
+  Widget _buildContent(bool isPlaying, bool isLoading) {
+    if (isLoading) {
+      return SizedBox(
+        width: 22,
+        height: 22,
+        child: CircularProgressIndicator(color: iconColor, strokeWidth: 2.5),
+      );
+    }
+
+    return Icon(
+      isPlaying ? Icons.pause : Icons.play_arrow,
+      size: 25,
+      color: iconColor,
     );
   }
 }
