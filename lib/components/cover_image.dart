@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:webradio_parque_verde/components/artwork.dart';
 
 // imports locais
 import '/constants.dart';
@@ -12,22 +11,20 @@ class Cover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 1,
+    return Container(
+      margin: EdgeInsets.only(top: 15, bottom: 15),
       child: CircleAvatar(
         radius: 125,
         backgroundColor: kColor2.withAlpha(50),
         child: ClipOval(
-          child: Artwork(coverUrl: _coverUrl),
-          // child: Image.network(
-          //   _coverUrl,
-          //   width: 220, // deve ser o dobro do radius
-          //   height: 220,
-          //   fit: BoxFit.cover, // mantém a proporção e cobre todo o círculo
-          //
-          //   errorBuilder: (context, error, stackTrace) =>
-          //       Image.network(kUrlCloudinaryLogo),
-          // ),
+          child: Image.network(
+            _coverUrl,
+            width: 220, // deve ser o dobro do radius
+            height: 220,
+            fit: BoxFit.cover, // mantém a proporção e cobre o círculo
+            errorBuilder: (context, error, stackTrace) =>
+                Image.network(kUrlCloudinaryLogo),
+          ),
         ),
       ),
     );

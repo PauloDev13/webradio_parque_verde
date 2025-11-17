@@ -15,9 +15,9 @@ const kUrlCover = 'https://centova2.ipstm.net/rpc/bmjceqts/streaminfo.get';
 
 // imagens no cloudinary
 const kUrlCloudinaryLogo =
-    'https://res.cloudinary.com/dymccetsg/image/upload/w_600,h_600,c_fill/v1762127704/logo_WR_hnnjvc.png';
+    'https://res.cloudinary.com/dymccetsg/image/upload/w_300,h_300,c_fill/v1762127704/logo_WR_hnnjvc.png';
 const kUrlCloudinaryLocucao =
-    'https://res.cloudinary.com/dymccetsg/image/upload/w_600,h_600,c_fill/v1762127201/locucao_puf2c9.png';
+    'https://res.cloudinary.com/dymccetsg/image/upload/w_300,h_300,c_fill/v1762127201/locucao_puf2c9.png';
 
 // Imagens locais
 const kBackgroundImg = 'assets/animation/animated_background.png';
@@ -58,6 +58,13 @@ const kDialogContentStyle = TextStyle(
 // estilo de texto para o conteúdo do Dialog
 const kTitleStyle = TextStyle(
   fontSize: 21,
+  fontFamily: kMichromaFont,
+  color: kColor2,
+);
+
+// estilo de texto para subtítulo
+const kSubTitleStyle = TextStyle(
+  fontSize: 18,
   fontFamily: kMichromaFont,
   color: kColor2,
 );

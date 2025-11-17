@@ -18,6 +18,7 @@ class RadioService extends BaseAudioHandler {
   bool wasPlaying = false;
   bool hasError = false;
   bool isLoading = false;
+  String nextCover = '';
 
   // Armazena o último item válido recebido
   MediaItem? lastMediaItem;
@@ -62,15 +63,12 @@ class RadioService extends BaseAudioHandler {
   // ---------------------------------------------------------------------------
   Future<void> processIcyMetadata(IcyMetadata metadata) async {
     final icyInfo = metadata.info;
-
     if (icyInfo == null) return;
 
     final raw = icyInfo.title?.trim() ?? '';
-
     if (raw.isEmpty) return;
 
     final lower = raw.toLowerCase();
-
     if (lower == 'web rádio' || lower == 'parque verde') return;
 
     final parts = raw.split(' - ');
@@ -82,11 +80,11 @@ class RadioService extends BaseAudioHandler {
 
     final previousCoverUrl = lastMediaItem?.artUri.toString();
 
-    debugPrint('CAPA ANTERIOR: $previousCoverUrl');
+    if (previousCoverUrl != null) {
+      nextCover = previousCoverUrl;
+    }
 
     var coverUrl = await fetchCoverItunes(artist, title);
-
-    debugPrint('NOVA CAPA: $coverUrl');
 
     artist.startsWith('Paulo') ? coverUrl = kUrlCloudinaryLocucao : coverUrl;
     artist.startsWith('Web') ||
@@ -95,31 +93,16 @@ class RadioService extends BaseAudioHandler {
         ? coverUrl = kUrlCloudinaryLogo
         : coverUrl;
 
-    var nextCover = previousCoverUrl;
+    if (coverUrl != previousCoverUrl) {
+      debugPrint('ENTROU NO IF');
+      nextCover = coverUrl;
+    }
 
     var newMedia = MediaItem(
       id: 'stream',
       title: title,
       artist: artist,
-      artUri: Uri.parse(nextCover!),
-    );
-
-    final isEquals = previousCoverUrl != coverUrl;
-
-    debugPrint('SÃO DIFERENTES: $isEquals');
-
-    if (isEquals) {
-      debugPrint('ENTROU NO IF');
-      nextCover = coverUrl;
-    }
-
-    debugPrint('CAPA QUE SERÁ EXIBIDA: $nextCover');
-
-    newMedia = MediaItem(
-      id: 'stream',
-      title: title,
-      artist: artist,
-      artUri: Uri.parse(nextCover),
+      artUri: Uri.parse(coverUrl),
     );
 
     lastMediaItem = newMedia;

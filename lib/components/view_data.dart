@@ -27,71 +27,83 @@ class ViewData extends StatelessWidget {
 
               final artist = item?.artist ?? 'Parque Verde';
               final title = item?.title ?? 'Web Rádio';
-              final cover = item?.artUri?.toString() ?? kUrlCloudinaryLogo;
+              // final cover = item?.artUri?.toString() ?? kUrlCloudinaryLogo;
+              final coverUrl = radioService.nextCover;
 
-              return Column(
-                children: <Widget>[
-                  SizedBox(height: constraints.maxHeight * .05),
-                  TextInfo(metadata: 'Web Rádio', textStyle: kTitleStyle),
-                  TextInfo(metadata: 'Parque Verde', textStyle: kTitleStyle),
+              return Container(
+                alignment: Alignment.topCenter,
+                margin: EdgeInsets.only(top: constraints.maxHeight * .06),
+                padding: EdgeInsets.only(left: 20, right: 20),
+                child: Column(
+                  children: <Widget>[
+                    const TextInfo(
+                      metadata: 'Web Rádio',
+                      textStyle: kSubTitleStyle,
+                    ),
+                    const TextInfo(
+                      metadata: 'Parque Verde',
+                      textStyle: kTitleStyle,
+                    ),
 
-                  // exibe a capa do álbum em execução
-                  Cover(coverUrl: cover),
+                    // exibe a capa do álbum em execução
+                    Cover(coverUrl: coverUrl),
 
-                  // exibe títulos do artista e música em execução
-                  TextInfo(metadata: artist, textStyle: kArtistTextStyle),
-                  SizedBox(height: 5),
-                  TextInfo(metadata: title, textStyle: kSongTextStyle),
+                    // exibe títulos do artista e música em execução
+                    TextInfo(metadata: artist, textStyle: kArtistTextStyle),
+                    const SizedBox(height: 5),
+                    TextInfo(metadata: title, textStyle: kSongTextStyle),
 
-                  // botões play/stop
-                  PlayPauseButton(
-                    backgroundColor: kColor3,
-                    borderColor: kColor2.withValues(alpha: 0.6),
-                    iconColor: kColor2,
-                    onPressed: radioService.togglePlayPause,
-                  ),
+                    const SizedBox(height: 10),
+                    // botões play/stop
+                    PlayPauseButton(
+                      backgroundColor: kColor3,
+                      borderColor: kColor2.withValues(alpha: 0.6),
+                      iconColor: kColor2,
+                      onPressed: radioService.togglePlayPause,
+                    ),
 
-                  // botões Instagram e Whatsapp
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.bottomCenter,
-                      padding: EdgeInsets.only(
-                        bottom: constraints.maxHeight * .08,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          ButtonSocialMedia(
-                            onPressed: () {
-                              SocialMediaService.openWhatsapp(
-                                phone: '5584987015547',
-                              );
-                            },
-                            icon: FontAwesomeIcons.whatsapp,
-                            iconSize: 24,
-                            iconColor: kColor2,
-                            label: 'Whatsapp',
-                            labelColor: kColor2,
-                            borderColor: kColor2.withValues(alpha: 0.6),
-                          ),
-                          ButtonSocialMedia(
-                            onPressed: () {
-                              SocialMediaService.openInstagram('prmorais_13');
-                            },
-                            icon: FontAwesomeIcons.instagram,
-                            iconSize: 24,
-                            iconColor: kColor2,
-                            label: 'Instagram',
-                            labelColor: kColor2,
-                            borderColor: kColor2.withValues(alpha: 0.6),
-                          ),
-                        ],
+                    // botões Instagram e Whatsapp
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.bottomCenter,
+                        padding: EdgeInsets.only(
+                          bottom: constraints.maxHeight * .07,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            ButtonSocialMedia(
+                              onPressed: () {
+                                SocialMediaService.openWhatsapp(
+                                  phone: '5584987015547',
+                                );
+                              },
+                              icon: FontAwesomeIcons.whatsapp,
+                              iconSize: 24,
+                              iconColor: kColor2,
+                              label: 'Whatsapp',
+                              labelColor: kColor2,
+                              borderColor: kColor2.withValues(alpha: 0.6),
+                            ),
+                            ButtonSocialMedia(
+                              onPressed: () {
+                                SocialMediaService.openInstagram('prmorais_13');
+                              },
+                              icon: FontAwesomeIcons.instagram,
+                              iconSize: 24,
+                              iconColor: kColor2,
+                              label: 'Instagram',
+                              labelColor: kColor2,
+                              borderColor: kColor2.withValues(alpha: 0.6),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
-            },
+            }, // builder
           );
         }, // builder
       ),
