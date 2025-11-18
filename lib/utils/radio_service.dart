@@ -61,8 +61,6 @@ class RadioService extends BaseAudioHandler {
   // PROCESSAMENTO DE METADADOS ICY
   // ---------------------------------------------------------------------------
   Future<void> processIcyMetadata(IcyMetadata metadata) async {
-    final lastCover = lastMediaItem?.artUri.toString();
-
     final icyInfo = metadata.info;
     if (icyInfo == null) return;
 
@@ -79,26 +77,33 @@ class RadioService extends BaseAudioHandler {
         ? parts.sublist(1).join(' - ').trim()
         : 'Sem informação';
 
-    var coverUrl = await fetchCoverItunes(artist, title);
+    final oldCover = lastMediaItem?.artUri.toString() ?? kUrlCloudinaryLogo;
 
-    artist.startsWith('Paulo') ? coverUrl = kUrlCloudinaryLocucao : coverUrl;
+    var newCover = await fetchCoverItunes(artist, title);
+
+    artist.startsWith('Paulo') ? newCover = kUrlCloudinaryLocucao : newCover;
     artist.startsWith('Web') ||
             title.startsWith('Hora') ||
             title.startsWith('Minuto')
-        ? coverUrl = kUrlCloudinaryLogo
-        : coverUrl;
+        ? newCover = kUrlCloudinaryLogo
+        : newCover;
+
+    final changed =
+        lastMediaItem?.title != title ||
+        lastMediaItem?.artist != artist ||
+        oldCover != newCover;
+
+    if (!changed) return;
 
     final newMedia = MediaItem(
       id: 'stream',
       title: title,
       artist: artist,
-      artUri: Uri.parse(coverUrl),
+      artUri: Uri.parse(newCover),
     );
 
-    if (lastCover != coverUrl) {
-      mediaItem.add(newMedia);
-      await updateMediaItem(newMedia);
-    }
+    mediaItem.add(newMedia);
+    await updateMediaItem(newMedia);
   }
 
   // ---------------------------------------------------------------------------

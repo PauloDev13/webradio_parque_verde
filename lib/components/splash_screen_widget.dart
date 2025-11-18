@@ -49,7 +49,7 @@ class AnimatedSplashScreenWidget extends StatelessWidget {
       splashIconSize: double.infinity,
       splashTransition: SplashTransition.fadeTransition,
       pageTransitionType: PageTransitionType.leftToRight,
-      duration: 2000,
+      duration: 1500,
       backgroundColor: kColor3,
     );
   }

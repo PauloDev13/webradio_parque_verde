@@ -8,9 +8,9 @@ import '/constants.dart';
 class Cover extends StatelessWidget {
   const Cover({super.key});
 
-  // const Cover({super.key, required String coverUrl}) : _coverUrl = coverUrl;
+  // const Cover({super.key, required String lastCover}) : _lastCover = lastCover;
   //
-  // final String _coverUrl;
+  // final String _lastCover;
 
   @override
   Widget build(BuildContext context) {

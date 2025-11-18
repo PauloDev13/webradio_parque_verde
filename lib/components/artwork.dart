@@ -25,7 +25,6 @@ class Artwork extends StatelessWidget {
       width: 240, // deve ser o dobro do radius
       height: 240,
       fit: BoxFit.cover, // mantém a proporção e cobre o círculo
-
       errorBuilder: (context, error, stackTrace) =>
           Image.network(kUrlCloudinaryLogo),
     );
