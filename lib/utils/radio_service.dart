@@ -18,7 +18,6 @@ class RadioService extends BaseAudioHandler {
   bool wasPlaying = false;
   bool hasError = false;
   bool isLoading = false;
-  String nextCover = '';
 
   // Armazena o último item válido recebido
   MediaItem? lastMediaItem;
@@ -62,6 +61,8 @@ class RadioService extends BaseAudioHandler {
   // PROCESSAMENTO DE METADADOS ICY
   // ---------------------------------------------------------------------------
   Future<void> processIcyMetadata(IcyMetadata metadata) async {
+    final lastCover = lastMediaItem?.artUri.toString();
+
     final icyInfo = metadata.info;
     if (icyInfo == null) return;
 
@@ -78,12 +79,6 @@ class RadioService extends BaseAudioHandler {
         ? parts.sublist(1).join(' - ').trim()
         : 'Sem informação';
 
-    final previousCoverUrl = lastMediaItem?.artUri.toString();
-
-    if (previousCoverUrl != null) {
-      nextCover = previousCoverUrl;
-    }
-
     var coverUrl = await fetchCoverItunes(artist, title);
 
     artist.startsWith('Paulo') ? coverUrl = kUrlCloudinaryLocucao : coverUrl;
@@ -93,23 +88,17 @@ class RadioService extends BaseAudioHandler {
         ? coverUrl = kUrlCloudinaryLogo
         : coverUrl;
 
-    if (coverUrl != previousCoverUrl) {
-      debugPrint('ENTROU NO IF');
-      nextCover = coverUrl;
-    }
-
-    var newMedia = MediaItem(
+    final newMedia = MediaItem(
       id: 'stream',
       title: title,
       artist: artist,
       artUri: Uri.parse(coverUrl),
     );
 
-    lastMediaItem = newMedia;
-
-    mediaItem.add(newMedia);
-
-    await updateMediaItem(newMedia);
+    if (lastCover != coverUrl) {
+      mediaItem.add(newMedia);
+      await updateMediaItem(newMedia);
+    }
   }
 
   // ---------------------------------------------------------------------------

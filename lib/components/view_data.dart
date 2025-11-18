@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:webradio_parque_verde/components/artwork.dart';
 import 'package:webradio_parque_verde/components/cover_image.dart';
 
 import '/components/button_play_stop.dart';
@@ -9,6 +10,8 @@ import '/constants.dart';
 import '/main.dart';
 import '/utils//social_media_service.dart';
 import 'text_info.dart';
+
+String coverUrl = '';
 
 class ViewData extends StatelessWidget {
   const ViewData({super.key, required this.status});
@@ -27,8 +30,7 @@ class ViewData extends StatelessWidget {
 
               final artist = item?.artist ?? 'Parque Verde';
               final title = item?.title ?? 'Web Rádio';
-              // final cover = item?.artUri?.toString() ?? kUrlCloudinaryLogo;
-              final coverUrl = radioService.nextCover;
+              final coverUrl = item?.artUri?.toString() ?? kUrlCloudinaryLogo;
 
               return Container(
                 alignment: Alignment.topCenter,
@@ -46,7 +48,8 @@ class ViewData extends StatelessWidget {
                     ),
 
                     // exibe a capa do álbum em execução
-                    Cover(coverUrl: coverUrl),
+                    InheritedCover(cover: coverUrl, child: const Cover()),
+                    // Cover(coverUrl: coverUrl),
 
                     // exibe títulos do artista e música em execução
                     TextInfo(metadata: artist, textStyle: kArtistTextStyle),
@@ -110,3 +113,14 @@ class ViewData extends StatelessWidget {
     );
   }
 }
+
+// class InheritedCover extends InheritedWidget {
+//   final String cover;
+//
+//   const InheritedCover({super.key, required this.cover, required super.child});
+//
+//   @override
+//   bool updateShouldNotify(covariant InheritedCover oldWidget) {
+//     return oldWidget.cover != cover;
+//   }
+// }

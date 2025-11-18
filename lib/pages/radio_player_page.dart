@@ -22,7 +22,6 @@ class _RadioPlayerPageState extends State<RadioPlayerPage>
   @override
   void initState() {
     super.initState();
-    radioService.lastMediaItem;
     // coloca a instância da RadioPlayerPage no observer
     WidgetsBinding.instance.addObserver(this);
     //iniciar o player
