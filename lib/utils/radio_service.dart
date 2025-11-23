@@ -23,6 +23,9 @@ class RadioService extends BaseAudioHandler {
   MediaItem? lastMediaItem;
   StreamSubscription<IcyMetadata?>? _icySubscription;
 
+  late String? lastSong = lastMediaItem?.title.toString();
+  // late String? lastCover = lastMediaItem?.artUri.toString();
+
   final _statusController = StreamController<RadioStatus>.broadcast();
   Stream<RadioStatus> get statusStream => _statusController.stream;
 
@@ -61,7 +64,7 @@ class RadioService extends BaseAudioHandler {
   // PROCESSAMENTO DE METADADOS ICY
   // ---------------------------------------------------------------------------
   Future<void> processIcyMetadata(IcyMetadata metadata) async {
-    final lastCover = lastMediaItem?.artUri.toString();
+    mediaItem.add(lastMediaItem);
 
     final icyInfo = metadata.info;
     if (icyInfo == null) return;
@@ -74,19 +77,25 @@ class RadioService extends BaseAudioHandler {
 
     final parts = raw.split(' - ');
 
-    final artist = parts.first.trim();
-    final title = parts.length > 1
+    var artist = parts.first.trim();
+    var title = parts.length > 1
         ? parts.sublist(1).join(' - ').trim()
         : 'Sem informação';
 
     var coverUrl = await fetchCoverItunes(artist, title);
 
-    artist.startsWith('Paulo') ? coverUrl = kUrlCloudinaryLocucao : coverUrl;
-    artist.startsWith('Web') ||
-            title.startsWith('Hora') ||
-            title.startsWith('Minuto')
-        ? coverUrl = kUrlCloudinaryLogo
-        : coverUrl;
+    if (artist.startsWith('Paulo')) {
+      coverUrl = kUrlCloudinaryLocucao;
+    } else if (artist.startsWith('Web')) {
+      coverUrl = kUrlCloudinaryLogo;
+    } else if (title.startsWith('Hora') || title.startsWith('Minuto')) {
+      coverUrl = kUrlCloudinaryLogo;
+      artist = 'Hora';
+      title = 'Certa';
+    }
+
+    // lastSong = title;
+    // lastCover = coverUrl;
 
     final newMedia = MediaItem(
       id: 'stream',
@@ -95,9 +104,10 @@ class RadioService extends BaseAudioHandler {
       artUri: Uri.parse(coverUrl),
     );
 
-    if (lastCover != coverUrl) {
-      mediaItem.add(newMedia);
-      await updateMediaItem(newMedia);
+    if (lastSong != title) {
+      lastMediaItem = newMedia;
+      mediaItem.add(lastMediaItem);
+      await updateMediaItem(lastMediaItem!);
     }
   }
 
@@ -210,10 +220,6 @@ class RadioService extends BaseAudioHandler {
   @override
   Future<void> play() async {
     await player.play();
-    // if (lastMediaItem != null) {
-    //   mediaItem.add(lastMediaItem);
-    //   await updateMediaItem(lastMediaItem!);
-    // }
   }
 
   @override
@@ -224,9 +230,6 @@ class RadioService extends BaseAudioHandler {
   @override
   Future<void> stop() async {
     await player.stop();
-    // if (lastMediaItem != null) {
-    //   mediaItem.add(lastMediaItem);
-    // }
     return super.stop();
   }
 

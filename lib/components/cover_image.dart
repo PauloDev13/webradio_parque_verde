@@ -8,17 +8,13 @@ import '/constants.dart';
 class Cover extends StatelessWidget {
   const Cover({super.key});
 
-  // const Cover({super.key, required String coverUrl}) : _coverUrl = coverUrl;
-  //
-  // final String _coverUrl;
-
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 15, bottom: 15),
       child: CircleAvatar(
         radius: 130,
-        backgroundColor: kColor2.withAlpha(30),
+        backgroundColor: kColor2.withAlpha(80),
         child: const ClipOval(child: Artwork()),
       ),
     );
